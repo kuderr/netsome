@@ -1,5 +1,5 @@
-from netsome.validators import bgp as validators
 from netsome.converters import bgp as converters
+from netsome.validators import bgp as validators
 
 
 class ASN:
