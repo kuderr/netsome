@@ -1,0 +1,9 @@
+ZERO = 0
+TWO_BYTES = 2**16
+FOUR_BYTES = 2**32
+
+DOT = "."
+COLON = ":"
+
+ASN_MAX = FOUR_BYTES - 1
+VID_MAX = 2**12 - 1
