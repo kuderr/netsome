@@ -24,7 +24,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Topic :: System :: Networking"
 ]
-description = ""
+description = "The one and only library to make your network business code handsome"
 keywords = ["library", "network"]
 license = "MIT License"
 name = "netsome"

@@ -7,3 +7,6 @@ COLON = ":"
 
 ASN_MAX = FOUR_BYTES - 1
 VID_MAX = 2**12 - 1
+
+
+IPV4_MAX = FOUR_BYTES - 1

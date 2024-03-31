@@ -19,3 +19,7 @@ utils:
 - resolve
 
 ranges/pools
+
+OTHER:
+
+- errors message
