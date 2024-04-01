@@ -1,6 +1,5 @@
-from netsome.validators import ipv4 as validators
-
 from netsome import constants as c
+from netsome.validators import ipv4 as validators
 
 
 def _address_to_int(string: str) -> int:

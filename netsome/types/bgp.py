@@ -1,6 +1,5 @@
-from netsome.validators import bgp as validators
-
 from netsome import constants as c
+from netsome.validators import bgp as validators
 
 
 def _asdotplus_to_asplain(string: str) -> int:
