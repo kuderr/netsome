@@ -37,3 +37,37 @@ def validate_int(number: int) -> None:
 
     if number < c.ZERO or number > c.IPV4_MAX:
         raise ValueError("Invalid value")
+
+
+def validate_network(string: str) -> None:
+    if not isinstance(string, str):
+        raise TypeError()
+
+    if c.SLASH not in string:
+        raise ValueError("mask not provided")
+
+    address, mask = string.split(c.SLASH)
+    validate_address(address)
+    validate_mask(mask)
+
+
+def validate_mask(string: str) -> None:
+    if not isinstance(string, str):
+        raise TypeError()
+
+    if not (string.isascii() and string.isdigit()):
+        raise ValueError()
+
+    validate_mask_len(int(string))
+
+
+def validate_mask_len(
+    number: int,
+    min_len: int = c.ZERO,
+    max_len: int = c.IPV4_NETWORK_MASK_MAX,
+) -> None:
+    if not isinstance(number, int):
+        raise TypeError()
+
+    if not (min_len <= number <= max_len):
+        raise ValueError()
