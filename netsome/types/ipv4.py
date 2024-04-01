@@ -1,15 +1,26 @@
-from netsome.converters import ipv4 as converters
 from netsome.validators import ipv4 as validators
+
+from netsome import constants as c
+
+
+def _address_to_int(string: str) -> int:
+    octets = map(int, string.split(c.DOT, maxsplit=3))
+    return int.from_bytes(octets, byteorder="big")
+
+
+def _int_to_address(number: int) -> str:
+    octets = map(str, number.to_bytes(length=4, byteorder="big"))
+    return c.DOT.join(octets)
 
 
 class IPv4Address:
     def __init__(self, address: str) -> None:
         validators.validate_address(address)
-        self._address = converters.address_to_int(address)
+        self._address = _address_to_int(address)
 
     # TODO: cache?
     def __str__(self) -> str:
-        return converters.int_to_address(self._address)
+        return _int_to_address(self._address)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({str(self)})"
