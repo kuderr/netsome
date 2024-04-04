@@ -107,11 +107,29 @@ class IPv4Network:
             validators.validate_prefixlen(prefixlen, min_len=new_prefixlen)
             new_prefixlen = prefixlen
 
+        prefixlen_diff = new_prefixlen - self._prefixlen
+
         start = int(self._address)
         end = int(self.broadcast) + 1
-        step = (int(self.hostmask) + 1) >> new_prefixlen - self._prefixlen
+        step = (int(self.hostmask) + 1) >> prefixlen_diff
         for addr in range(start, end, step):
             yield IPv4Network.from_int(addr, new_prefixlen)
+
+    def supernet(
+        self,
+        prefixlen: int | None = None,
+    ) -> "IPv4Network":
+        new_prefixlen = self._prefixlen - 1
+        if prefixlen:
+            validators.validate_prefixlen(prefixlen, max_len=new_prefixlen)
+            new_prefixlen = prefixlen
+
+        prefixlen_diff = self._prefixlen - new_prefixlen
+
+        return IPv4Network.from_int(
+            int(self._address) & (int(self._netmask) << prefixlen_diff),
+            new_prefixlen,
+        )
 
     def hosts(self):
         start = int(self._address) + 1
