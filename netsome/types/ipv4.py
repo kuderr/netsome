@@ -1,5 +1,5 @@
 import typing as t
-
+import functools
 from netsome import constants as c
 from netsome.validators import ipv4 as validators
 
@@ -35,11 +35,19 @@ class IPv4Address:
         return f'{self.__class__.__name__}("{str(self)}")'
 
 
+def _validate_network_int(address: int, prefixlen: int):
+    netmask = c.IPV4_MAX ^ (c.IPV4_MAX >> prefixlen)
+    if address & netmask != address:
+        raise ValueError("host bits set")
+
+
 class IPv4Network:
     def __init__(self, network: str) -> None:
         address, mask = network.split(c.SLASH, maxsplit=1)
         validators.validate_address(address)
         validators.validate_mask(mask)
+
+        _validate_network_int(_address_to_int(address), int(mask))
 
         self._prefixlen = int(mask)
         self._address = IPv4Address(address)
@@ -55,10 +63,40 @@ class IPv4Network:
 
     # TODO: cache
     def __str__(self) -> str:
-        return f"{_int_to_address(self._address)}/{self._mask}"
+        return f"{_int_to_address(int(self._address))}/{self._prefixlen}"
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{str(self)}")'
+
+    @classmethod
+    def from_int(cls, int_address: int, prefixlen: int) -> "IPv4Network":
+        validators.validate_int(int_address)
+        validators.validate_prefixlen(prefixlen)
+
+        _validate_network_int(int_address, prefixlen)
+
+        address = f"{_int_to_address(int_address)}{c.SLASH}{prefixlen}"
+        return cls(address)
+
+    @property
+    def prefixlen(self):
+        return self._prefixlen
+
+    @property
+    def address(self):
+        return self._address
+
+    @property
+    def netmask(self):
+        return self._netmask
+
+    @functools.cached_property
+    def hostmask(self):
+        return IPv4Address.from_int(int(self._netmask) ^ c.IPV4_MAX)
+
+    @functools.cached_property
+    def broadcast(self):
+        return IPv4Address.from_int(int(self._address) | int(self.hostmask))
 
     def subnets(
         self,
@@ -66,5 +104,18 @@ class IPv4Network:
     ) -> t.Generator["IPv4Network", None, None]:
         new_prefixlen = self._prefixlen + 1
         if prefixlen:
-            validators.validate_prefixlen(prefixlen, min_len=self._prefixlen + 1)
+            validators.validate_prefixlen(prefixlen, min_len=new_prefixlen)
             new_prefixlen = prefixlen
+
+        start = int(self._address)
+        end = int(self.broadcast) + 1
+        step = (int(self.hostmask) + 1) >> new_prefixlen - self._prefixlen
+        for addr in range(start, end, step):
+            yield IPv4Network.from_int(addr, new_prefixlen)
+
+    def hosts(self):
+        start = int(self._address) + 1
+        end = int(self.broadcast)
+
+        for addr in range(start, end):
+            yield IPv4Address.from_int(addr)
