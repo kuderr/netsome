@@ -2,13 +2,13 @@ TODO:
 
 types/validators:
 
-- asn
-- community
-- ipv4 address
-- ipv4 subnet
-- vlan
-- dns
-- mac
+- [x] asn
+- [ ] community
+- [x] ipv4 address
+- [x] ipv4 subnet
+- [x] vlan
+- [ ] dns
+- [ ] mac
 
 parsing:
 
@@ -19,3 +19,9 @@ utils:
 - resolve
 
 ranges/pools
+
+OTHER:
+
+- errors message
+- docs
+- comments

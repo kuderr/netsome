@@ -1,5 +1,6 @@
-from netsome.converters import bgp as converters
 import pytest
+
+from netsome.converters import bgp as converters
 
 
 @pytest.mark.parametrize(
