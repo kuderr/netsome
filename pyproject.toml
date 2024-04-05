@@ -34,6 +34,7 @@ version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+sortedcontainers = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.25.0"
