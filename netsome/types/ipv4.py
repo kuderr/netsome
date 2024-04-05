@@ -18,7 +18,7 @@ def _int_to_address(number: int) -> str:
 class IPv4Address:
     def __init__(self, address: str) -> None:
         validators.validate_address_str(address)
-        self._netaddr = _address_to_int(address)
+        self._addr = _address_to_int(address)
 
     @classmethod
     def from_int(cls, number: int) -> "IPv4Address":
@@ -27,10 +27,10 @@ class IPv4Address:
 
     @functools.cached_property
     def address(self) -> str:
-        return _int_to_address(self._netaddr)
+        return _int_to_address(self._addr)
 
     def __int__(self) -> int:
-        return self._netaddr
+        return self._addr
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
