@@ -19,6 +19,7 @@ def validate_asdotplus(string: str) -> None:
     if c.DOT not in string:
         raise ValueError("Invalid asdot+ format, must be HIGH_ORDER.LOW_ORDER")
 
+    # FIXME
     validate_asplain(converters.asdotplus_to_asplain(string))
 
 
