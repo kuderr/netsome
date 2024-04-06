@@ -1,12 +1,12 @@
 from netsome import constants as c
-from netsome.converters import bgp as converters
+from netsome._converters import bgp as converters
 
 
 def validate_asplain(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid asplain type, must be int")
 
-    if number < c.ZERO or number > c.ASN_MAX:
+    if not (c.ZERO <= number <= c.ASN_MAX):
         raise ValueError(
             f"Invalid asplain number. Must be in range {c.ZERO}-{c.ASN_MAX}"
         )
@@ -19,7 +19,6 @@ def validate_asdotplus(string: str) -> None:
     if c.DOT not in string:
         raise ValueError("Invalid asdot+ format, must be HIGH_ORDER.LOW_ORDER")
 
-    # FIXME
     validate_asplain(converters.asdotplus_to_asplain(string))
 
 
