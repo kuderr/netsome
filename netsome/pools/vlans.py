@@ -3,6 +3,7 @@ import sortedcontainers
 from netsome.types import vlans
 
 
+# TODO(kuderr): можно сделать просто intpool
 class VlanPool:
     def __init__(self, start: int, end: int) -> None:
         # TODO: validations
