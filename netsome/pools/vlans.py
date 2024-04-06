@@ -4,20 +4,14 @@ from netsome.types import vlans
 
 
 class VlanPool:
-    def __init__(
-        self,
-        start: int,
-        end: int,
-        reserved: list[vlans.VID] | None,
-        free: list[vlans.VID] | None,
-    ) -> None:
+    def __init__(self, start: int, end: int) -> None:
         # TODO: validations
         self._start = start
         self._end = end
 
-        self._reserved = sortedcontainers.SortedSet(reserved or [])
+        self._reserved = sortedcontainers.SortedSet()
         self._free = sortedcontainers.SortedSet(
-            free or vlans.VID(vid) for vid in range(start, end)
+            vlans.VID(num) for num in range(start, end)
         )
 
     def allocate(self, vid: vlans.VID | None = None) -> vlans.VID:
