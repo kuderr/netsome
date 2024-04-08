@@ -1,3 +1,5 @@
+import typing as t
+
 from netsome import constants as c
 from netsome.validators import vlans as validators
 
@@ -11,11 +13,11 @@ class VID:
         validators.validate_vid(vid)
         self._vid = vid
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other: t.Any) -> bool:
         return isinstance(other, VID) and (self._vid == other._vid)
 
-    def __lt__(self, other: object) -> bool:
-        return isinstance(other, VID) and (self._vid < other._vid)
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._vid < other._vid)
 
     def __hash__(self) -> int:
         return hash(self._vid)

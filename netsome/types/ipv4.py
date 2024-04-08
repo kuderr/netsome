@@ -26,6 +26,15 @@ class IPv4Address:
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
 
+    def __hash__(self) -> int:
+        return hash(self._addr)
+
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and self._addr < other._addr
+
+    def __eq__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and self._addr == other._addr
+
 
 class IPv4Network:
     def __init__(self, network: str) -> None:
