@@ -15,7 +15,7 @@ sequence = [
 ]
 
 [tool.poe.tasks.tests]
-cmd = "poetry run pytest -vvv"
+cmd = "poetry run pytest -vvv --cov=. --cov-report html"
 
 [tool.poetry]
 authors = ["kuderr <dakudryavcev@gmail.com>"]
@@ -24,19 +24,25 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Topic :: System :: Networking"
 ]
-description = "The one and only library to make your network business code handsome"
+description = "The one and only library to make your network code handsome"
 keywords = ["library", "network"]
-license = "MIT License"
+license = "X11 License Distribution Modification Variant"
 name = "netsome"
 readme = "README.md"
 repository = "https://github.com/kuderr/netsome"
-version = "0.2.0"
+version = "0.3.0"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+sortedcontainers = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.25.0"
 pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
 toml-sort = "^0.23.1"
 ruff = "^0.3.5"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/kuderr/netsome/issues"
+"Homepage" = "https://github.com/kuderr/netsome"

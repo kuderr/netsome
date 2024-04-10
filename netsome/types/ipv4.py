@@ -2,32 +2,23 @@ import functools
 import typing as t
 
 from netsome import constants as c
+from netsome._converters import ipv4 as converters
 from netsome.validators import ipv4 as validators
-
-
-def _address_to_int(string: str) -> int:
-    octets = map(int, string.split(c.DOT, maxsplit=3))
-    return int.from_bytes(octets, byteorder="big")
-
-
-def _int_to_address(number: int) -> str:
-    octets = map(str, number.to_bytes(length=4, byteorder="big"))
-    return c.DOT.join(octets)
 
 
 class IPv4Address:
     def __init__(self, address: str) -> None:
         validators.validate_address_str(address)
-        self._addr = _address_to_int(address)
+        self._addr = converters.address_to_int(address)
 
     @classmethod
     def from_int(cls, number: int) -> "IPv4Address":
         validators.validate_address_int(number)
-        return cls(_int_to_address(number))
+        return cls(converters.int_to_address(number))
 
     @functools.cached_property
     def address(self) -> str:
-        return _int_to_address(self._addr)
+        return converters.int_to_address(self._addr)
 
     def __int__(self) -> int:
         return self._addr
@@ -35,11 +26,14 @@ class IPv4Address:
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
 
+    def __hash__(self) -> int:
+        return hash(self._addr)
 
-def _validate_network_int(address: int, prefixlen: int):
-    netmask = c.IPV4_MAX ^ (c.IPV4_MAX >> prefixlen)
-    if address & netmask != address:
-        raise ValueError("host bits set")
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and self._addr < other._addr
+
+    def __eq__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and self._addr == other._addr
 
 
 class IPv4Network:
@@ -47,8 +41,9 @@ class IPv4Network:
         address, prefixlen = network.split(c.SLASH, maxsplit=1)
         validators.validate_address_str(address)
         validators.validate_prefixlen_str(prefixlen)
-
-        _validate_network_int(_address_to_int(address), int(prefixlen))
+        validators.validate_network_int(
+            converters.address_to_int(address), int(prefixlen)
+        )
 
         self._prefixlen = int(prefixlen)
         self._netaddr = IPv4Address(address)
@@ -63,10 +58,9 @@ class IPv4Network:
     def from_int(cls, int_address: int, prefixlen: int) -> "IPv4Network":
         validators.validate_address_int(int_address)
         validators.validate_prefixlen_int(prefixlen)
+        validators.validate_network_int(int_address, prefixlen)
 
-        _validate_network_int(int_address, prefixlen)
-
-        address = f"{_int_to_address(int_address)}{c.SLASH}{prefixlen}"
+        address = f"{converters.int_to_address(int_address)}{c.SLASH}{prefixlen}"
         return cls(address)
 
     @property

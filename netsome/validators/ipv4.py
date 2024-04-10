@@ -17,7 +17,7 @@ def validate_address_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid type")
 
-    if number < c.ZERO or number > c.IPV4_MAX:
+    if not (c.ZERO <= number <= c.IPV4_MAX):
         raise ValueError("Invalid value")
 
 
@@ -38,7 +38,7 @@ def validate_octet_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid type")
 
-    if number < c.ZERO or number > c.IPV4_OCTET_MAX:
+    if not (c.ZERO <= number <= c.IPV4_OCTET_MAX):
         raise ValueError("Invalid value")
 
 
@@ -64,3 +64,9 @@ def validate_prefixlen_int(
 
     if not (min_len <= number <= max_len):
         raise ValueError()
+
+
+def validate_network_int(address: int, prefixlen: int):
+    netmask = c.IPV4_MAX ^ (c.IPV4_MAX >> prefixlen)
+    if address & netmask != address:
+        raise ValueError("host bits set")
