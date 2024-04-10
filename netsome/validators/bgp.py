@@ -42,7 +42,7 @@ def validate_community(string: str) -> None:
             "Invalid Community format, delimiter must be colon – ASN:VALUE"
         )
 
-    asn, value = map(int, string.split(c.COLON))
+    asn, value = map(int, string.split(c.COLON, maxsplit=1))
     if not (c.ZERO <= asn <= c.ASN_ORDER_MAX):
         raise ValueError(
             f"Invalid ASN in Community. Must be in range {c.ZERO}-{c.ASN_ORDER_MAX}"
