@@ -30,7 +30,7 @@ license = "MIT License"
 name = "netsome"
 readme = "README.md"
 repository = "https://github.com/kuderr/netsome"
-version = "0.1.1"
+version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -39,3 +39,4 @@ python = "^3.12"
 poethepoet = "^0.25.0"
 pytest = "^8.1.1"
 toml-sort = "^0.23.1"
+ruff = "^0.3.5"
