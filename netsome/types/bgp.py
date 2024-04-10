@@ -1,6 +1,10 @@
+import typing as t
+
 from netsome import constants as c
 from netsome._converters import bgp as converters
 from netsome.validators import bgp as validators
+
+# TODO(kuderr): can move some common stuff to Base class
 
 
 class ASN:
@@ -32,6 +36,15 @@ class ASN:
     def to_asplain(self):
         return self._number
 
+    def __eq__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number == other._number)
+
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number < other._number)
+
+    def __hash__(self) -> int:
+        return hash(self._number)
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._number})"
 
@@ -45,6 +58,15 @@ class Community:
     def from_str(cls, value: str) -> "Community":
         validators.validate_community(value)
         return cls(converters.community_to_asplain(value))
+
+    def __eq__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number == other._number)
+
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number < other._number)
+
+    def __hash__(self) -> int:
+        return hash(self._number)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._number})"

@@ -14,7 +14,7 @@ class VID:
         self._vid = vid
 
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, VID) and (self._vid == other._vid)
+        return isinstance(other, self.__class__) and (self._vid == other._vid)
 
     def __lt__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._vid < other._vid)
