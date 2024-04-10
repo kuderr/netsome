@@ -1,28 +1,11 @@
-TODO:
+# netsome
 
-types/validators:
+# About
 
-- [x] asn
-- [ ] community
-- [x] ipv4 address
-- [x] ipv4 subnet
-- [x] vlan
-- [ ] dns
-- [ ] mac
+TBD
 
-parsing:
+# Authors
 
-- ports
+- Dmitriy Kudryavtsev - author - [kuderr](https://github.com/kuderr)
 
-utils:
-
-- resolve
-
-ranges/pools
-
-OTHER:
-
-- errors message
-- docs
-- comments
-- python version
+Special thanks to [Dima Burmistrov](https://gitlab.com/pyctrl) for inspiration and lessons on how to make libraries and good interfaces. ASN type v1 was crafted within our dev team.
