@@ -34,3 +34,17 @@ class ASN:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._number})"
+
+
+class Community:
+    def __init__(self, number: int) -> None:
+        validators.validate_asplain(number)
+        self._number = number
+
+    @classmethod
+    def from_str(cls, value: str) -> "Community":
+        validators.validate_community(value)
+        return cls(converters.community_to_asplain(value))
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self._number})"

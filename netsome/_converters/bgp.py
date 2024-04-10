@@ -21,3 +21,13 @@ def asplain_to_asdot(number: int) -> str:
 def asplain_to_asdotplus(number: int) -> str:
     high_order, low_order = divmod(number, c.TWO_BYTES)
     return f"{high_order}{c.DOT}{low_order}"
+
+
+def asplain_to_community(number: int) -> str:
+    asn, value = divmod(number, c.TWO_BYTES)
+    return f"{asn}{c.COLON}{value}"
+
+
+def community_to_asplain(string: str) -> int:
+    asn, value = map(int, string.split(c.COLON, maxsplit=1))
+    return asn * c.TWO_BYTES + value
