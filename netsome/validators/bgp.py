@@ -43,11 +43,11 @@ def validate_community(string: str) -> None:
         )
 
     asn, value = map(int, string.split(c.COLON))
-    if not (c.ONE <= asn <= c.ASN_MAX):
+    if not (c.ZERO <= asn <= c.ASN_ORDER_MAX):
         raise ValueError(
-            f"Invalid ASN in Community. Must be in range {c.ONE}-{c.ASN_MAX}"
+            f"Invalid ASN in Community. Must be in range {c.ZERO}-{c.ASN_ORDER_MAX}"
         )
-    if not (c.ZERO <= value <= c.ASN_MAX):
+    if not (c.ZERO <= value <= c.ASN_ORDER_MAX):
         raise ValueError(
-            f"Invalid VALUE number in Community. Must be in range {c.ZERO}-{c.ASN_MAX}"
+            f"Invalid VALUE number in Community. Must be in range {c.ZERO}-{c.ASN_ORDER_MAX }"
         )
