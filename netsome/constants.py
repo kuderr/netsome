@@ -1,18 +1,46 @@
-ZERO = 0
-ONE_BYTE = 2**8
-TWO_BYTES = ONE_BYTE**2
-FOUR_BYTES = TWO_BYTES**2
+import enum
 
-DOT = "."
-COLON = ":"
-SLASH = "/"
 
-ASN_MAX = FOUR_BYTES - 1
-ASN_ORDER_MAX = TWO_BYTES - 1
+class BYTES(enum.IntEnum):
 
-DEFAULT_VID = 1
-VID_MAX = 2**12 - 1
+    ZERO = 0
+    ONE = 2**8
+    TWO = ONE**2
+    FOUR = TWO**2
 
-IPV4_PREFIXLEN_MAX = 32
-IPV4_MAX = FOUR_BYTES - 1
-IPV4_OCTET_MAX = ONE_BYTE - 1
+
+class DELIMITERS(str, enum.Enum):
+
+    DASH = "-"
+    DOT = "."
+    COLON = ":"
+    SLASH = "/"
+
+    def join_as_str(self, parts):
+        return self._value_.join(map(str, parts))
+
+
+class IPV4(enum.IntEnum):
+
+    PREFIXLEN_MIN = 0
+    PREFIXLEN_MAX = 32
+
+    ADDRESS_MIN = 0
+    ADDRESS_MAX = BYTES.FOUR - 1
+
+    OCTET_MIN = 0
+    OCTET_MAX = BYTES.ONE - 1
+
+
+class VLAN(enum.IntEnum):
+
+    MIN = 0
+    DEFAULT = 1
+    MAX = 2 ** 12 - 1
+
+
+class BGP(enum.IntEnum):
+
+    ASN_MIN = 0
+    ASN_MAX = BYTES.FOUR - 1
+    ASN_ORDER_MAX = BYTES.TWO - 1

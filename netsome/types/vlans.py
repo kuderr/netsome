@@ -1,16 +1,20 @@
 import typing as t
 
 from netsome import constants as c
-from netsome.validators import vlans as validators
+from netsome.validators import vlans as valids
 
 
 class VID:
     """VLAN ID"""
 
-    _RESERVED = {c.ZERO, c.DEFAULT_VID, c.VID_MAX}
+    VID_MIN = c.VLAN.MIN
+    VID_DEFAULT = c.VLAN.DEFAULT
+    VID_MAX = c.VLAN.MAX
+
+    _RESERVED = {VID_MIN, VID_DEFAULT, VID_MAX}
 
     def __init__(self, vid: int) -> None:
-        validators.validate_vid(vid)
+        valids.validate_vid(vid)
         self._vid = vid
 
     def __eq__(self, other: t.Any) -> bool:
@@ -29,4 +33,4 @@ class VID:
         return self._vid in self._RESERVED
 
     def is_default(self) -> bool:
-        return self._vid == c.DEFAULT_VID
+        return self._vid == self.VID_DEFAULT
