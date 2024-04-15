@@ -1,6 +1,6 @@
 import pytest
 
-from netsome._converters import ipv4 as converters
+from netsome._converters import ipv4 as convs
 
 
 @pytest.mark.parametrize(
@@ -12,7 +12,7 @@ from netsome._converters import ipv4 as converters
     ),
 )
 def test_address_to_int(test_input, expected):
-    assert converters.address_to_int(test_input) == expected
+    assert convs.address_to_int(test_input) == expected
 
 
 @pytest.mark.parametrize(
@@ -24,4 +24,4 @@ def test_address_to_int(test_input, expected):
     ),
 )
 def test_int_to_address(test_input, expected):
-    assert converters.int_to_address(test_input) == expected
+    assert convs.int_to_address(test_input) == expected

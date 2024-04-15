@@ -2,14 +2,18 @@ from netsome import constants as c
 from netsome._converters import bgp as convs
 
 
-def validate_asplain(number: int) -> None:
+def validate_asplain(
+    number: int,
+    min_len: int = c.BGP.ASN_MIN,
+    max_len: int = c.BGP.ASN_MAX,
+) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid asplain type, must be int")
 
-    if not (c.BGP.ASN_MIN <= number <= c.BGP.ASN_MAX):
+    if not (min_len <= number <= max_len):
         msg = (
             "Invalid asplain number. Must be in range "
-            + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_MAX))
+            + c.DELIMITERS.DASH.join_as_str((min_len, max_len))
         )
         raise ValueError(msg)
 
@@ -31,7 +35,7 @@ def validate_asdot(string: str) -> None:
     if c.DELIMITERS.DOT in string:
         validate_asdotplus(string)
     else:
-        validate_asplain(int(string))
+        validate_asplain(int(string), max_len=c.BGP.ASN_ORDER_MAX)
 
 
 def validate_community(string: str) -> None:
