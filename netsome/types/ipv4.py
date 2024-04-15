@@ -49,7 +49,6 @@ class IPv4Address:
 
 
 class IPv4Network:
-
     def __init__(self, network: str) -> None:
         # TODO(d.burmistrov): move this block into util? (validate + convert)
         addr, prefixlen = network.split(c.DELIMITERS.SLASH, maxsplit=1)

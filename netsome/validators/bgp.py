@@ -7,8 +7,10 @@ def validate_asplain(number: int) -> None:
         raise TypeError("Invalid asplain type, must be int")
 
     if not (c.BGP.ASN_MIN <= number <= c.BGP.ASN_MAX):
-        msg = ("Invalid asplain number. Must be in range "
-               + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_MAX)))
+        msg = (
+            "Invalid asplain number. Must be in range "
+            + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_MAX))
+        )
         raise ValueError(msg)
 
 
@@ -44,10 +46,14 @@ def validate_community(string: str) -> None:
 
     asn, value = int(asn), int(value)
     if not (c.BGP.ASN_MIN <= asn <= c.BGP.ASN_ORDER_MAX):
-        msg = ("Invalid ASN in Community. Must be in range "
-               + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_ORDER_MAX)))
+        msg = (
+            "Invalid ASN in Community. Must be in range "
+            + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_ORDER_MAX))
+        )
         raise ValueError(msg)
     if not (c.BGP.ASN_MIN <= value <= c.BGP.ASN_ORDER_MAX):
-        msg = ("Invalid VALUE number in Community. Must be in range "
-               + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_ORDER_MAX)))
+        msg = (
+            "Invalid VALUE number in Community. Must be in range "
+            + c.DELIMITERS.DASH.join_as_str((c.BGP.ASN_MIN, c.BGP.ASN_ORDER_MAX))
+        )
         raise ValueError(msg)

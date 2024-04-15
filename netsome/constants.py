@@ -34,9 +34,10 @@ class IPV4(enum.IntEnum):
 
 class VLAN(enum.IntEnum):
 
-    MIN = 0
-    DEFAULT = 1
-    MAX = 2 ** 12 - 1
+    VID_MIN = 0
+    VID_MAX = 2**12 - 1
+
+    VID_DEFAULT = 1
 
 
 class BGP(enum.IntEnum):

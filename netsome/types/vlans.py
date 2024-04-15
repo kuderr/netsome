@@ -7,11 +7,11 @@ from netsome.validators import vlans as valids
 class VID:
     """VLAN ID"""
 
-    VID_MIN = c.VLAN.MIN
-    VID_DEFAULT = c.VLAN.DEFAULT
-    VID_MAX = c.VLAN.MAX
+    MIN = c.VLAN.VID_MIN
+    MAX = c.VLAN.VID_MAX
+    DEFAULT = c.VLAN.VID_DEFAULT
 
-    _RESERVED = {VID_MIN, VID_DEFAULT, VID_MAX}
+    RESERVED = {MIN, DEFAULT, MAX}
 
     def __init__(self, vid: int) -> None:
         valids.validate_vid(vid)
@@ -30,7 +30,7 @@ class VID:
         return f"{self.__class__.__name__}({self._vid})"
 
     def is_reserved(self) -> bool:
-        return self._vid in self._RESERVED
+        return self._vid in self.RESERVED
 
     def is_default(self) -> bool:
-        return self._vid == self.VID_DEFAULT
+        return self._vid == self.DEFAULT

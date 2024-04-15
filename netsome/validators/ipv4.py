@@ -38,7 +38,7 @@ def validate_octet_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid type")
 
-    if not (c.BYTES.ZERO <= number <= c.IPV4.OCTET_MAX):
+    if not (c.IPV4.OCTET_MIN <= number <= c.IPV4.OCTET_MAX):
         raise ValueError("Invalid value")
 
 
@@ -56,7 +56,7 @@ def validate_prefixlen_str(string: str) -> None:
 # TODO(dm.a.kudryavtsev): можно сделать общим валидатором на значение
 def validate_prefixlen_int(
     number: int,
-    min_len: int = c.BYTES.ZERO,
+    min_len: int = c.IPV4.PREFIXLEN_MIN,
     max_len: int = c.IPV4.PREFIXLEN_MAX,
 ) -> None:
     if not isinstance(number, int):
