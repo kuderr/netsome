@@ -30,11 +30,10 @@ license = "X11 License Distribution Modification Variant"
 name = "netsome"
 readme = "README.md"
 repository = "https://github.com/kuderr/netsome"
-version = "0.3.2"
+version = "0.3.3"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-sortedcontainers = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.25.0"
