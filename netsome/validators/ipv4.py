@@ -5,19 +5,19 @@ def validate_address_str(string: str):
     if not isinstance(string, str):
         raise TypeError("Invalid type")
 
-    octets = string.split(c.DOT)
+    octets = tuple(map(int, string.split(c.DELIMITERS.DOT)))
     if len(octets) != 4:
         raise ValueError()
 
     for octet in octets:
-        validate_octet_str(octet)
+        validate_octet_int(octet)
 
 
 def validate_address_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid type")
 
-    if not (c.ZERO <= number <= c.IPV4_MAX):
+    if not (c.IPV4.ADDRESS_MIN <= number <= c.IPV4.ADDRESS_MAX):
         raise ValueError("Invalid value")
 
 
@@ -38,7 +38,7 @@ def validate_octet_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError("Invalid type")
 
-    if not (c.ZERO <= number <= c.IPV4_OCTET_MAX):
+    if not (c.IPV4.OCTET_MIN <= number <= c.IPV4.OCTET_MAX):
         raise ValueError("Invalid value")
 
 
@@ -56,8 +56,8 @@ def validate_prefixlen_str(string: str) -> None:
 # TODO(dm.a.kudryavtsev): можно сделать общим валидатором на значение
 def validate_prefixlen_int(
     number: int,
-    min_len: int = c.ZERO,
-    max_len: int = c.IPV4_PREFIXLEN_MAX,
+    min_len: int = c.IPV4.PREFIXLEN_MIN,
+    max_len: int = c.IPV4.PREFIXLEN_MAX,
 ) -> None:
     if not isinstance(number, int):
         raise TypeError()
@@ -67,6 +67,6 @@ def validate_prefixlen_int(
 
 
 def validate_network_int(address: int, prefixlen: int):
-    netmask = c.IPV4_MAX ^ (c.IPV4_MAX >> prefixlen)
+    netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen)
     if address & netmask != address:
         raise ValueError("host bits set")
