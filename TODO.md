@@ -20,11 +20,12 @@ utils:
 
 - [ ] resolve dns
 - [ ] ranges/pools
+- [ ] mappings? like mac oui mapping?
 
 OTHER:
 
 - [ ] errors message
 - [ ] docs
 - [ ] comments
-- [ ] python version decrease
+- [x] python version decrease
 - [ ] tests
