@@ -52,6 +52,7 @@ class BGP(enum.IntEnum):
 
 
 class MAC(enum.IntEnum):
+
     ADDRESS_MIN = 0
     ADDRESS_MAX = BYTES.SIX - 1
 

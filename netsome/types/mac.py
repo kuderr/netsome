@@ -1,28 +1,21 @@
-from netsome import constants as c
-import re
 import contextlib
+import functools
+import re
 
-# TODO(kuderr):
-# 1. Parse canonical formats:
-# 1.1 AC-DE-48-01-02-03 (Windows)
-# 1.2 AC:DE:48:01:02:03 (Unix)
-# 1.3 ACDE.4801.0203 (Cisco)
-# 2. Parse bitreverse (noncanonical) format?
-# 2.1 35:7B:12:80:40:C0
-# 3. Is methods for b0/b1 bits in first octet
-# 3.1 unicast/multicast
-# 3.2 oui/local
+from netsome import constants as c
 
 
 def validate_hex(string: str) -> None:
-    if not re.match(r"^[0-9a-fA-F]{12}$", string):
+    if not re.fullmatch(r"^[0-9a-fA-F]{12}$", string):
         raise ValueError
 
 
-# TODO: rename
-def validate_ietf(string: str) -> None:
-    if not re.match(r"^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$", string):
-        raise ValueError
+def validate_int(number: int) -> None:
+    if not isinstance(number, int):
+        raise TypeError()
+
+    if not (c.MAC.ADDRESS_MIN <= number <= c.MAC.ADDRESS_MAX):
+        raise ValueError()
 
 
 class MacAddress:
@@ -34,58 +27,87 @@ class MacAddress:
     OUI_MAX = c.MAC.OUI_MAX
     NIC_MAX = c.MAC.NIC_MAX
 
-    def __init__(self, addr: int) -> None:
-        if not (self.MIN <= addr <= self.MAX):
-            raise ValueError
+    def __init__(self, addr: str) -> None:
+        validate_hex(addr)
+        self._addr = int(addr, base=16)
 
-        self._addr = addr
+    @functools.cached_property
+    def addr(self):
+        addr = hex(self._addr)[2:]
+        leading_zeros = "0" * (12 - len(addr))
+        return leading_zeros + addr
+
+    @functools.cached_property
+    def oui(self):
+        return self.addr[:6]
+
+    @functools.cached_property
+    def nic(self):
+        return self.addr[6:]
+
+    def is_multicast(self) -> bool:
+        first_octet = self._addr >> 40
+        return bool(first_octet & 1)
+
+    def is_unicast(self) -> bool:
+        return not self.is_multicast()
+
+    def is_local(self) -> bool:
+        first_octet = self._addr >> 40
+        return bool(first_octet & 2)
+
+    def is_global(self) -> bool:
+        return not self.is_local()
 
     @classmethod
-    def from_hex(cls, string: str) -> "MacAddress":
-        # ACDE48127B80
-        validate_hex(string)
-        return cls(int(string, base=16))
+    def from_dashed(cls, string: str) -> "MacAddress":
+        return cls(string.replace(c.DELIMITERS.DASH, ""))
 
     @classmethod
-    def from_ieee(cls, string: str) -> "MacAddress":
-        # AC-DE-48-12-7B-80
-        return cls.from_hex(string.replace(c.DELIMITERS.DASH, ""))
+    def from_coloned(cls, string: str) -> "MacAddress":
+        return cls(string.replace(c.DELIMITERS.COLON, ""))
 
     @classmethod
-    def from_ieee_bit_reversed(cls, string: str) -> "MacAddress":
-        # AC-DE-48-12-7B-80 bit reversed = 35:7B:12:48:DE:01
-        # reverse bits order in every part
-        raise NotImplementedError
+    def from_dotted(cls, string: str) -> "MacAddress":
+        return cls(string.replace(c.DELIMITERS.DOT, ""))
 
     @classmethod
-    def from_ietf(cls, string: str) -> "MacAddress":
-        # AC:DE:48:12:7B:80
-        return cls.from_hex(string.replace(c.DELIMITERS.COLON, ""))
+    def from_int(cls, number: int) -> "MacAddress":
+        validate_int(number)
+        obj = cls.__new__(cls)
+        obj._addr = number
+        return obj
 
     @classmethod
-    def from_cisco(cls, string: str) -> "MacAddress":
-        # ACDE.4812.7B80
-        return cls.from_hex(string.replace(c.DELIMITERS.DOT, ""))
-
-    @classmethod
-    def parse(cls, string: str) -> "MacAddress":
+    def parse(cls, addr: str | int) -> "MacAddress":
         # TODO: can collect all this from cls attrs?
-        from_fmts = tuple(
-            cls.from_hex,
-            cls.from_ieee,
-            # cls.from_ieee_bit_reversed,
-            cls.from_ietf,
-            cls.from_cisco,
+        from_fmts = (
+            cls.from_dashed,
+            cls.from_coloned,
+            cls.from_dotted,
+            # cls.from_bit_reversed,
+            cls.from_int,
         )
 
         for fmt in from_fmts:
-            with contextlib.suppress(ValueError, TypeError):
-                return fmt(string)
+            with contextlib.suppress(ValueError, TypeError, AttributeError):
+                return fmt(addr)
 
         raise ValueError
 
+    @functools.lru_cache
+    def to_str(
+        self,
+        deliminiter: c.DELIMITERS = c.DELIMITERS.DASH,
+        group_len: int = 2,
+    ) -> str:
+        addr = self.addr
+        return deliminiter.join(
+            addr[i : i + group_len] for i in range(0, len(addr), group_len)
+        )
+
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({hex(self._addr)})"
+        return f'{self.__class__.__name__}("{self.addr}")'
 
 
 class Mac64Address:
@@ -96,7 +118,3 @@ class Mac64Address:
 
     OUI_MAX = c.MAC.OUI_MAX
     NIC_MAX = c.MAC.NIC64_MAX
-
-    def __init__(self) -> None:
-        self._oui = ...
-        self._nic = ...
