@@ -141,5 +141,9 @@ class IPv4Network:
         start = int(self._netaddr) + 1
         end = int(self.broadcast)
 
+        if self.prefixlen == 31:
+            start -= 1
+            end += 1
+
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)
