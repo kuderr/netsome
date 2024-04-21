@@ -1,6 +1,12 @@
 import enum
 
 
+class NUMERALSYSTEMS(enum.IntEnum):
+    BIN = 2
+    DEC = 10
+    HEX = 16
+
+
 class BYTES(enum.IntEnum):
 
     ZERO = 0
