@@ -16,17 +16,17 @@ def asdot_to_asplain(string: str) -> int:
 def asplain_to_asdot(number: int) -> str:
     high_order, low_order = divmod(number, c.BYTES.TWO)
     if high_order:
-        return c.DELIMITERS.DOT.join_as_str((high_order, low_order))
+        return c.DELIMITERS.DOT.join_as_str(high_order, low_order)
 
     return str(low_order)
 
 
 def asplain_to_asdotplus(number: int) -> str:
-    return c.DELIMITERS.DOT.join_as_str(divmod(number, c.BYTES.TWO))
+    return c.DELIMITERS.DOT.join_as_str(*divmod(number, c.BYTES.TWO))
 
 
 def asplain_to_community(number: int) -> str:
-    return c.DELIMITERS.COLON.join_as_str(divmod(number, c.BYTES.TWO))
+    return c.DELIMITERS.COLON.join_as_str(*divmod(number, c.BYTES.TWO))
 
 
 def community_to_asplain(string: str) -> int:

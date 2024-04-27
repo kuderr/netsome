@@ -28,9 +28,23 @@ class IPv4Address:
         obj._addr = number
         return obj
 
+    @classmethod
+    def from_cidr(cls, address: str) -> "IPv4Address":
+        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
+        if int(prefixlen) != cls.PREFIXLEN_MAX:
+            raise ValueError(
+                f"Invalid address prefixlen, expected: {cls.PREFIXLEN_MAX}"
+            )
+
+        return cls(addr)
+
     @functools.cached_property
     def address(self) -> str:
         return convs.int_to_address(self._addr)
+
+    @functools.cached_property
+    def cidr(self) -> str:
+        return c.DELIMITERS.SLASH.join_as_str(self.address, self.PREFIXLEN_MAX.value)
 
     def __int__(self) -> int:
         return self._addr
@@ -95,7 +109,7 @@ class IPv4Network:
 
     @functools.cached_property
     def address(self) -> str:
-        return c.DELIMITERS.SLASH.join_as_str((self._netaddr.address, self._prefixlen))
+        return c.DELIMITERS.SLASH.join_as_str(self._netaddr.address, self._prefixlen)
 
     @functools.cached_property
     def hostmask(self) -> IPv4Address:

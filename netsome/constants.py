@@ -26,7 +26,7 @@ class DELIMITERS(str, enum.Enum):
     COLON = ":"
     SLASH = "/"
 
-    def join_as_str(self, parts):
+    def join_as_str(self, *parts):
         return self._value_.join(map(str, parts))
 
 
