@@ -5,10 +5,12 @@ types/validators:
 - [x] asn
 - [x] community
 - [x] ipv4 address
-- [x] ipv4 subnet
+- [x] ipv4 network
 - [x] vlan
-- [ ] dns
 - [ ] mac
+- [ ] dns
+- [ ] ipv6 address
+- [ ] ipv6 network
 
 parsing:
 
@@ -18,10 +20,12 @@ utils:
 
 - [ ] resolve dns
 - [ ] ranges/pools
+- [ ] mappings? like mac oui mapping?
 
 OTHER:
 
 - [ ] errors message
 - [ ] docs
 - [ ] comments
-- [ ] python version decrease
+- [x] python version decrease
+- [ ] tests
