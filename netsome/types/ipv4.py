@@ -62,6 +62,14 @@ class IPv4Address:
         return isinstance(other, self.__class__) and self._addr == other._addr
 
 
+class IPv4Interface:
+    def __init__(self, address: str) -> None:
+        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
+        valids.validate_address_str(addr)
+        valids.validate_prefixlen_str(prefixlen)
+        prefixlen = int(prefixlen)
+
+
 class IPv4Network:
     def __init__(self, network: str) -> None:
         # TODO(d.burmistrov): move this block into util? (validate + convert)
