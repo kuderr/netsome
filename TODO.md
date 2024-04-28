@@ -64,6 +64,7 @@ InterfaceName:
 
 ## other
 
+- [ ] better imports `from netsome import types as nst; nst.IPv4Address(...)`
 - [ ] better error messages
 - [ ] docs
 - [ ] base classes in types to reuse code and DRY
