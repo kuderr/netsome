@@ -1,31 +1,71 @@
-TODO:
+# TODO:
 
-types/validators:
+## types
 
-- [x] asn
-- [x] community
-- [x] ipv4 address
-- [x] ipv4 network
-- [x] vlan
-- [ ] mac
-- [ ] dns
-- [ ] ipv6 address
-- [ ] ipv6 network
+### ipv4
 
-parsing:
+All:
 
-- [ ] ports
+- [ ] constants for local, global etc. networks
 
-utils:
+IPv4Interface:
 
-- [ ] resolve dns
-- [ ] ranges/pools
-- [ ] mappings? like mac oui mapping?
+- [ ] implement
 
-OTHER:
+IPv4Network:
 
-- [ ] errors message
+- [ ] .hosts with /31 network
+- [ ] catch .subnets with /32 prefxlen?
+- [ ] parse cidr 10/8, 10.2/16, 10.2.3/24, etc.
+
+IPv6Address:
+
+- [ ] implement
+
+IPv6Interface:
+
+- [ ] implement
+
+IPv6Network:
+
+- [ ] implement
+
+### mac
+
+Mac64Address:
+
+- [ ] implement
+
+### dns
+
+DnsRecord:
+
+- [ ] implement?
+
+### ports
+
+InterfaceName:
+
+- [ ] implement
+
+## validators
+
+- [ ] build common set of validators:
+  - [ ] int size
+  - [ ] str is digit ?
+  - ...
+
+## utils
+
+- [ ] dns resolve ?
+- [ ] ranges/pools ?
+- [ ] mappings:
+  - [ ] oui mapping ?
+
+## other
+
+- [ ] better error messages
 - [ ] docs
-- [ ] comments
-- [x] python version decrease
+- [ ] base classes in types to reuse code and DRY
 - [ ] tests
+- [ ] think about public interfaces

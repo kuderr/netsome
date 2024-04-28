@@ -1,29 +1,9 @@
 import contextlib
 import functools
-import re
 import typing as t
 
 from netsome import constants as c
-
-
-# TODO: make common
-def validate_hex_string(string: str, size: int) -> None:
-
-    # TODO: make common
-    if not isinstance(string, str):
-        raise TypeError
-
-    if not re.fullmatch(r"^[0-9a-fA-F]{%s}$" % size, string):
-        raise ValueError
-
-
-# TODO: make common
-def validate_int(number: int) -> None:
-    if not isinstance(number, int):
-        raise TypeError()
-
-    if not (c.MAC.ADDRESS_MIN <= number <= c.MAC.ADDRESS_MAX):
-        raise ValueError()
+from netsome.validators import mac as valids
 
 
 class MacAddress:
@@ -40,7 +20,7 @@ class MacAddress:
     OUI_PART_STRING_SIZE = 6
 
     def __init__(self, addr: str) -> None:
-        validate_hex_string(addr, self.ADDR_STRING_SIZE)
+        valids.validate_hex_string(addr, self.ADDR_STRING_SIZE)
         self._addr = int(addr, base=c.NUMERALSYSTEMS.HEX)
 
     @functools.cached_property
@@ -84,7 +64,7 @@ class MacAddress:
 
     @classmethod
     def from_int(cls, number: int) -> "MacAddress":
-        validate_int(number)
+        valids.validate_int(number)
         obj = cls.__new__(cls)
         obj._addr = number
         return obj
