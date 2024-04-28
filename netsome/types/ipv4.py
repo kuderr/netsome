@@ -62,14 +62,6 @@ class IPv4Address:
         return isinstance(other, self.__class__) and self._addr == other._addr
 
 
-class IPv4Interface:
-    def __init__(self, address: str) -> None:
-        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
-        valids.validate_address_str(addr)
-        valids.validate_prefixlen_str(prefixlen)
-        prefixlen = int(prefixlen)
-
-
 class IPv4Network:
     def __init__(self, network: str) -> None:
         # TODO(d.burmistrov): move this block into util? (validate + convert)
@@ -102,6 +94,9 @@ class IPv4Network:
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
+
+    def __hash__(self) -> int:
+        return hash(self.as_tuple())
 
     @property
     def prefixlen(self) -> int:
@@ -165,3 +160,36 @@ class IPv4Network:
 
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)
+
+
+class IPv4Interface:
+    def __init__(self, address: str) -> None:
+        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
+        self._addr = IPv4Address(addr)
+
+        prefixlen = int(prefixlen)
+        netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen)
+        netaddr = int(self._addr) & netmask
+        self._network = IPv4Network.from_int(netaddr, prefixlen)
+
+    def __repr__(self) -> str:
+        ip = c.DELIMITERS.SLASH.join_as_str(self._addr.address, self._network.prefixlen)
+        return f'{self.__class__.__name__}("{ip}")'
+
+    def __hash__(self) -> int:
+        return hash((self._addr, self._network))
+
+    def __eq__(self, other: t.Any) -> bool:
+        return (
+            isinstance(other, self.__class__)
+            and self._addr == other._addr
+            and self._network == other._network
+        )
+
+    @property
+    def network(self) -> "IPv4Network":
+        return self._network
+
+    @property
+    def address(self) -> "IPv4Address":
+        return self._addr
