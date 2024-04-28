@@ -89,6 +89,29 @@ class IPv4Network:
         obj._populate(IPv4Address.from_int(int_addr), prefixlen)
         return obj
 
+    @classmethod
+    def from_cidr(cls, network: str) -> "IPv4Network":
+        parts = network.split(c.DELIMITERS.SLASH, maxsplit=1)
+        if len(parts) == 1:
+            # 10, 10.1, 10.1.3
+            # only octets
+            [addr] = parts
+            # TODO: smh validate 1 to 4 octets
+            valids.validate_address_str(addr)
+            # prefixlen = 32 - (len(octets) * 8)
+            # build network with provided octets
+        elif len(parts) == 2:
+            # 10/8, 10.1/16, 10.1.3/24
+            # octets and prefixlen
+            addr, prefixlen = parts
+            valids.validate_address_str(addr)
+            valids.validate_prefixlen_str(prefixlen)
+            # validate prefixlen % 8 == 0
+            # build network with provided octets
+
+        # ???
+        raise ValueError()
+
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen
 
