@@ -7,10 +7,11 @@
 All:
 
 - [ ] constants for local, global etc. networks
+- [ ] tests
 
 IPv4Interface:
 
-- [ ] implement
+- [x] implement
 
 IPv4Network:
 
