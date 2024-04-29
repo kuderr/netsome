@@ -154,9 +154,15 @@ class IPv4Network:
 
         return IPv4Network.from_int(addr, new_prefixlen)
 
-    def hosts(self):
+    def hosts(self) -> t.Generator["IPv4Address", None, None]:
         start = int(self._netaddr) + 1
         end = int(self.broadcast)
+
+        # TODO(kuderr): make it prettier?
+        # /31 and /32 prefixlens
+        if self._prefixlen + 2 > c.IPV4.PREFIXLEN_MAX:
+            start -= 1
+            end += 1
 
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)

@@ -15,8 +15,8 @@ IPv4Interface:
 
 IPv4Network:
 
-- [ ] .hosts with /31 network
-- [ ] catch .subnets with /32 prefxlen?
+- [x] .hosts with /31, /32 network
+- [x] catch .subnets with /32 prefxlen? **/32 networks is valid**
 - [ ] parse cidr 10/8, 10.2/16, 10.2.3/24, etc.
 
 IPv6Address:
@@ -65,7 +65,7 @@ InterfaceName:
 
 ## other
 
-- [ ] better imports `from netsome import types as nst; nst.IPv4Address(...)`
+- [x] better imports `from netsome import types as nst; nst.IPv4Address(...)`
 - [ ] better error messages
 - [ ] docs
 - [ ] base classes in types to reuse code and DRY
