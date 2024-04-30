@@ -97,11 +97,11 @@ class IPv4Network:
             # 10, 10.1, 10.1.3
             [addr] = parts
             octets = addr.split(c.DELIMITERS.DOT)
+            prefixlen = len(octets) * 8
             octets += ["0"] * (4 - len(octets))
 
             addr = c.DELIMITERS.DOT.join(octets)
             valids.validate_address_str(addr)
-            prefixlen = 32 - (len(octets) * 8)
             obj = cls.__new__(cls)
             obj._populate(IPv4Address.from_int(convs.address_to_int(addr)), prefixlen)
             return obj
