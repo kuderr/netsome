@@ -93,16 +93,21 @@ class IPv4Network:
     def from_cidr(cls, network: str) -> "IPv4Network":
         parts = network.split(c.DELIMITERS.SLASH, maxsplit=1)
         if len(parts) == 1:
-            # 10, 10.1, 10.1.3
             # only octets
+            # 10, 10.1, 10.1.3
             [addr] = parts
-            # TODO: smh validate 1 to 4 octets
+            octets = addr.split(c.DELIMITERS.DOT)
+            octets += ["0"] * (4 - len(octets))
+
+            addr = c.DELIMITERS.DOT.join(octets)
             valids.validate_address_str(addr)
-            # prefixlen = 32 - (len(octets) * 8)
-            # build network with provided octets
+            prefixlen = 32 - (len(octets) * 8)
+            obj = cls.__new__(cls)
+            obj._populate(IPv4Address.from_int(convs.address_to_int(addr)), prefixlen)
+            return obj
         elif len(parts) == 2:
-            # 10/8, 10.1/16, 10.1.3/24
             # octets and prefixlen
+            # 10/8, 10.1/16, 10.1.3/24
             addr, prefixlen = parts
             valids.validate_address_str(addr)
             valids.validate_prefixlen_str(prefixlen)
