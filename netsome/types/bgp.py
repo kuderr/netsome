@@ -17,6 +17,10 @@ class ASN:
         valids.validate_asplain(number)
         self._number = number
 
+    @property
+    def number(self):
+        return self._number
+
     @classmethod
     def from_asdot(cls, string: str) -> "ASN":
         valids.validate_asdot(string)
@@ -58,6 +62,10 @@ class Community:
     def __init__(self, number: int) -> None:
         valids.validate_asplain(number)
         self._number = number
+
+    @property
+    def number(self):
+        return self._number
 
     @classmethod
     def from_str(cls, value: str) -> "Community":
