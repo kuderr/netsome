@@ -24,17 +24,17 @@ class MacAddress:
         self._addr = int(addr, base=c.NUMERALSYSTEMS.HEX)
 
     @functools.cached_property
-    def address(self):
+    def address(self) -> str:
         addr = hex(self._addr)[2:]  # ignore 0x part
         leading_zeros = "0" * (self.ADDR_STRING_SIZE - len(addr))
         return leading_zeros + addr
 
     @functools.cached_property
-    def oui(self):
+    def oui(self) -> str:
         return self.address[: self.OUI_PART_STRING_SIZE]
 
     @functools.cached_property
-    def nic(self):
+    def nic(self) -> str:
         return self.address[self.OUI_PART_STRING_SIZE :]
 
     def is_multicast(self) -> bool:
@@ -76,7 +76,6 @@ class MacAddress:
             cls.from_dashed,
             cls.from_coloned,
             cls.from_dotted,
-            # cls.from_bit_reversed,
             cls.from_int,
         )
 

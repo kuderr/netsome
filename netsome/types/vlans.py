@@ -17,6 +17,10 @@ class VID:
         valids.validate_vid(vid)
         self._vid = vid
 
+    @property
+    def vid(self) -> int:
+        return self._vid
+
     def __eq__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._vid == other._vid)
 

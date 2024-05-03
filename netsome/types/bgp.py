@@ -18,7 +18,7 @@ class ASN:
         self._number = number
 
     @property
-    def number(self):
+    def number(self) -> int:
         return self._number
 
     @classmethod
@@ -64,7 +64,7 @@ class Community:
         self._number = number
 
     @property
-    def number(self):
+    def number(self) -> int:
         return self._number
 
     @classmethod
