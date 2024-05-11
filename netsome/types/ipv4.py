@@ -93,29 +93,30 @@ class IPv4Network:
     def from_cidr(cls, network: str) -> "IPv4Network":
         parts = network.split(c.DELIMITERS.SLASH, maxsplit=1)
         if len(parts) == 1:
-            # only octets
-            # 10, 10.1, 10.1.3
-            [addr] = parts
-            octets = addr.split(c.DELIMITERS.DOT)
-            prefixlen = len(octets) * 8
-            octets += ["0"] * (4 - len(octets))
+            # only octets: 10, 10.1, 10.1.3
+            return cls.from_int(*cls._from_octets(parts[0]))
 
-            addr = c.DELIMITERS.DOT.join(octets)
-            valids.validate_address_str(addr)
-            obj = cls.__new__(cls)
-            obj._populate(IPv4Address.from_int(convs.address_to_int(addr)), prefixlen)
-            return obj
-        elif len(parts) == 2:
-            # octets and prefixlen
-            # 10/8, 10.1/16, 10.1.3/24
-            addr, prefixlen = parts
-            valids.validate_address_str(addr)
-            valids.validate_prefixlen_str(prefixlen)
-            # validate prefixlen % 8 == 0
-            # build network with provided octets
+        if len(parts) == 2:
+            # octets and prefixlen: 10/8, 10.1/16, 10.1.3/24
+            addr, prefixlen = cls._from_octets(parts[0])
+            if prefixlen != int(parts[1]):
+                raise ValueError()
 
-        # ???
+            return cls.from_int(addr, prefixlen)
+
         raise ValueError()
+
+    @staticmethod
+    def _from_octets(string: str) -> tuple[int, int]:
+        octets = string.split(c.DELIMITERS.DOT)
+        for octet in octets:
+            valids.validate_octet_str(octet)
+
+        prefixlen = len(octets) * 8
+        octets += ["0"] * (c.IPV4.OCTETS_COUNT - len(octets))
+        addr = c.DELIMITERS.DOT.join(octets)
+
+        return convs.address_to_int(addr), prefixlen
 
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen

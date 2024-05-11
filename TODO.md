@@ -74,3 +74,4 @@ InterfaceName:
 - [ ] tests
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
+- [ ] int/str for types ???
