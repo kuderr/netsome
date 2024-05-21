@@ -12,12 +12,14 @@ All:
 IPv4Interface:
 
 - [x] implement
+- [ ] `__lt__`
 
 IPv4Network:
 
 - [x] .hosts with /31, /32 network
 - [x] catch .subnets with /32 prefxlen? **/32 networks is valid**
 - [ ] parse cidr 10/8, 10.2/16, 10.2.3/24, etc.
+- [ ] `__lt__`
 
 IPv6Address:
 

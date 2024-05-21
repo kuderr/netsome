@@ -97,6 +97,13 @@ class IPv4Network:
 
     def __hash__(self) -> int:
         return hash(self.as_tuple())
+    
+    def __eq__(self, other: t.Any) -> bool:
+        return (
+            isinstance(other, self.__class__)
+            and self._netaddr == other._netaddr
+            and self._prefixlen == other._prefixlen
+        )
 
     @property
     def prefixlen(self) -> int:
