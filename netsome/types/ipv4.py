@@ -191,7 +191,7 @@ class IPv4Interface:
 
     def __hash__(self) -> int:
         return hash((self._addr, self._network))
-    
+
     def __eq__(self, other: t.Any) -> bool:
         return (
             isinstance(other, self.__class__)
