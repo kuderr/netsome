@@ -8,7 +8,6 @@ class NUMERALSYSTEMS(enum.IntEnum):
 
 
 class BYTES(enum.IntEnum):
-
     ZERO = 0
     ONE = 2**8
     TWO = 2 ** (8 * 2)
@@ -20,7 +19,6 @@ class BYTES(enum.IntEnum):
 
 
 class DELIMITERS(str, enum.Enum):
-
     DASH = "-"
     DOT = "."
     COLON = ":"
@@ -31,7 +29,6 @@ class DELIMITERS(str, enum.Enum):
 
 
 class IPV4(enum.IntEnum):
-
     PREFIXLEN_MIN = 0
     PREFIXLEN_MAX = 32
 
@@ -45,7 +42,6 @@ class IPV4(enum.IntEnum):
 
 
 class VLAN(enum.IntEnum):
-
     VID_MIN = 0
     VID_MAX = 2**12 - 1
 
@@ -53,7 +49,6 @@ class VLAN(enum.IntEnum):
 
 
 class BGP(enum.IntEnum):
-
     ASN_MIN = 0
     ASN_MAX = BYTES.FOUR - 1
     ASN_ORDER_MAX = BYTES.TWO - 1
