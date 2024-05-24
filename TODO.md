@@ -73,3 +73,4 @@ InterfaceName:
 - [ ] base classes in types to reuse code and DRY
 - [ ] tests
 - [ ] think about public interfaces
+- [ ] IpPools? netaddr.IPSet analog
