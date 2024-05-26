@@ -1,4 +1,5 @@
 import pytest
+
 from netsome import constants as c
 
 

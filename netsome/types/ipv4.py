@@ -97,7 +97,7 @@ class IPv4Network:
 
     def __hash__(self) -> int:
         return hash(self.as_tuple())
-    
+
     def __eq__(self, other: t.Any) -> bool:
         return (
             isinstance(other, self.__class__)
