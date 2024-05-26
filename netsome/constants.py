@@ -38,6 +38,8 @@ class IPV4(enum.IntEnum):
     ADDRESS_MIN = 0
     ADDRESS_MAX = BYTES.FOUR - 1
 
+    OCTETS_COUNT = 4
+
     OCTET_MIN = 0
     OCTET_MAX = BYTES.ONE - 1
 
