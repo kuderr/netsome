@@ -29,8 +29,8 @@ class IPv4Address:
         return obj
 
     @classmethod
-    def from_cidr(cls, address: str) -> "IPv4Address":
-        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
+    def from_cidr(cls, string: str) -> "IPv4Address":
+        addr, prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
         if int(prefixlen) != cls.PREFIXLEN_MAX:
             raise ValueError(
                 f"Invalid address prefixlen, expected: {cls.PREFIXLEN_MAX}"
@@ -89,6 +89,37 @@ class IPv4Network:
         obj._populate(IPv4Address.from_int(int_addr), prefixlen)
         return obj
 
+    @classmethod
+    def from_cidr(cls, string: str) -> "IPv4Network":
+        addr, *prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
+        obj = cls.from_octets(addr)
+
+        if prefixlen:
+            prefixlen = prefixlen[0]
+            valids.validate_prefixlen_str(prefixlen)
+            if obj.prefixlen != int(prefixlen):
+                raise ValueError()
+
+        return obj
+
+    @classmethod
+    def from_octets(cls, string: str) -> "IPv4Network":
+        octets = string.split(c.DELIMITERS.DOT)
+        if len(octets) > c.IPV4.OCTETS_COUNT:
+            raise ValueError()
+
+        for octet in octets:
+            valids.validate_octet_str(octet)
+
+        prefixlen = len(octets) * 8
+        octets += ["0"] * (c.IPV4.OCTETS_COUNT - len(octets))
+        addr = c.DELIMITERS.DOT.join(octets)
+
+        obj = cls.__new__(cls)
+        obj._populate(IPv4Address(addr), prefixlen)
+
+        return obj
+
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen
 
@@ -97,7 +128,7 @@ class IPv4Network:
 
     def __hash__(self) -> int:
         return hash(self.as_tuple())
-    
+
     def __eq__(self, other: t.Any) -> bool:
         return (
             isinstance(other, self.__class__)
@@ -133,10 +164,8 @@ class IPv4Network:
         self,
         prefixlen: int | None = None,
     ) -> t.Generator["IPv4Network", None, None]:
-        new_prefixlen = self._prefixlen + 1
-        if prefixlen:
-            valids.validate_prefixlen_int(prefixlen, min_len=new_prefixlen)
-            new_prefixlen = prefixlen
+        new_prefixlen = prefixlen or self._prefixlen + 1
+        valids.validate_prefixlen_int(new_prefixlen, min_len=self._prefixlen + 1)
 
         prefixlen_diff = new_prefixlen - self._prefixlen
 
@@ -151,10 +180,8 @@ class IPv4Network:
         self,
         prefixlen: int | None = None,
     ) -> "IPv4Network":
-        new_prefixlen = self._prefixlen - 1
-        if prefixlen:
-            valids.validate_prefixlen_int(prefixlen, max_len=new_prefixlen)
-            new_prefixlen = prefixlen
+        new_prefixlen = prefixlen or self._prefixlen - 1
+        valids.validate_prefixlen_int(new_prefixlen, max_len=self._prefixlen - 1)
 
         prefixlen_diff = self._prefixlen - new_prefixlen
         addr = int(self._netaddr) & (int(self._netmask) << prefixlen_diff)

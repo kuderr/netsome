@@ -1,12 +1,12 @@
 from netsome import constants as c
 
 
-def validate_address_str(string: str):
+def validate_address_str(string: str) -> None:
     if not isinstance(string, str):
         raise TypeError("Invalid type")
 
     octets = tuple(map(int, string.split(c.DELIMITERS.DOT)))
-    if len(octets) != 4:
+    if len(octets) != c.IPV4.OCTETS_COUNT:
         raise ValueError()
 
     for octet in octets:
@@ -66,7 +66,7 @@ def validate_prefixlen_int(
         raise ValueError()
 
 
-def validate_network_int(address: int, prefixlen: int):
+def validate_network_int(address: int, prefixlen: int) -> None:
     netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen)
     if address & netmask != address:
         raise ValueError("host bits set")

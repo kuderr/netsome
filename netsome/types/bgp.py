@@ -68,9 +68,9 @@ class Community:
         return self._number
 
     @classmethod
-    def from_str(cls, value: str) -> "Community":
-        valids.validate_community(value)
-        return cls(convs.community_to_asplain(value))
+    def from_str(cls, string: str) -> "Community":
+        valids.validate_community(string)
+        return cls(convs.community_to_asplain(string))
 
     def __eq__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._number == other._number)
