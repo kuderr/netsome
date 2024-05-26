@@ -29,8 +29,8 @@ class IPv4Address:
         return obj
 
     @classmethod
-    def from_cidr(cls, address: str) -> "IPv4Address":
-        addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
+    def from_cidr(cls, string: str) -> "IPv4Address":
+        addr, prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
         if int(prefixlen) != cls.PREFIXLEN_MAX:
             raise ValueError(
                 f"Invalid address prefixlen, expected: {cls.PREFIXLEN_MAX}"
@@ -90,8 +90,8 @@ class IPv4Network:
         return obj
 
     @classmethod
-    def from_cidr(cls, network: str) -> "IPv4Network":
-        addr, *prefixlen = network.split(c.DELIMITERS.SLASH, maxsplit=1)
+    def from_cidr(cls, string: str) -> "IPv4Network":
+        addr, *prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
         obj = cls.from_octets(addr)
 
         if prefixlen:
