@@ -15,7 +15,7 @@ sequence = [
 ]
 
 [tool.poe.tasks.tests]
-cmd = "poetry run pytest -vvv --cov=. --cov-report html"
+cmd = "poetry run pytest -vvv --cov=netsome --cov-report html"
 
 [tool.poetry]
 authors = ["kuderr <dakudryavcev@gmail.com>"]

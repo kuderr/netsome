@@ -1,23 +1,23 @@
 import pytest
 
-from netsome.types import vlans
+from netsome import types
 
 
 @pytest.mark.parametrize("test_input", (0, 1, 4095))
 def test_init_ok(test_input):
-    assert vlans.VID(test_input)
+    assert types.VID(test_input)
 
 
 @pytest.mark.parametrize("test_input", ("0", 1.1, [], object()))
 def test_init_type_error(test_input):
     with pytest.raises(TypeError):
-        vlans.VID(test_input)
+        types.VID(test_input)
 
 
 @pytest.mark.parametrize("test_input", (-1, -4095, 4096))
 def test_init_value_error(test_input):
     with pytest.raises(ValueError):
-        vlans.VID(test_input)
+        types.VID(test_input)
 
 
 vids = pytest.mark.parametrize(
@@ -36,12 +36,12 @@ def test_property_vid(vid):
 
 @vids
 def test_eq(vid):
-    assert vid == vlans.VID(vid.vid)
+    assert vid == types.VID(vid.vid)
 
 
 @vids
 def test_lt(vid):
-    assert vid < vlans.VID(vid.vid + 1)
+    assert vid < types.VID(vid.vid + 1)
 
 
 @vids
