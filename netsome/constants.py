@@ -43,10 +43,10 @@ class BGP(enum.IntEnum):
 
 
 PORT_PATTERNS = {
-    r"^[Ee]th(ernet)?(?P<value>\d+\/\d+)$": "Ethernet",
-    r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)(?P<value>\d+\/\d+)$": "GigabitEthernet",
-    r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)(?P<value>\d+\/\d+)$": "FastEthernet",
-    r"^(Loopback|loopback|Lo|lo)(?P<value>\d+\/\d+)$": "Loopback",
-    r"^(Mgmt|mgmt|Ma(?=nagement$))(?P<value>\d+\/\d+)$": "Management",
-    r"^(Port-?channel|port-?channel|Po)(?P<value>\d+\/\d+)$": "PortChannel",
+    "Ethernet": r"^[Ee]th(ernet)?(?P<value>\d+\/\d+)$",
+    "GigabitEthernet": r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)(?P<value>\d+\/\d+)$",
+    "FastEthernet": r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)(?P<value>\d+\/\d+)$",
+    "Loopback": r"^(Loopback|loopback|Lo|lo)(?P<value>\d+\/\d+)$",
+    "Management": r"^(Mgmt|mgmt|Ma(?=nagement$))(?P<value>\d+\/\d+)$",
+    "PortChannel": r"^(Port-?channel|port-?channel|Po)(?P<value>\d+\/\d+)$",
 }
