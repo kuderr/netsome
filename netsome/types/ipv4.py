@@ -55,11 +55,20 @@ class IPv4Address:
     def __hash__(self) -> int:
         return hash(self._addr)
 
-    def __lt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and self._addr < other._addr
-
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and self._addr == other._addr
+        return isinstance(other, self.__class__) and (self._addr == other._addr)
+
+    def __lt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._addr < other._addr)
+
+    def __le__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._addr <= other._addr)
+
+    def __gt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._addr > other._addr)
+
+    def __ge__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._addr >= other._addr)
 
 
 class IPv4Network:
@@ -132,8 +141,8 @@ class IPv4Network:
     def __eq__(self, other: t.Any) -> bool:
         return (
             isinstance(other, self.__class__)
-            and self._netaddr == other._netaddr
-            and self._prefixlen == other._prefixlen
+            and (self._netaddr == other._netaddr)
+            and (self._prefixlen == other._prefixlen)
         )
 
     @property

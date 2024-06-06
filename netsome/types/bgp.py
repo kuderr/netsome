@@ -78,6 +78,15 @@ class Community:
     def __lt__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._number < other._number)
 
+    def __le__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number <= other._number)
+
+    def __gt__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number > other._number)
+
+    def __ge__(self, other: t.Any) -> bool:
+        return isinstance(other, self.__class__) and (self._number >= other._number)
+
     def __hash__(self) -> int:
         return hash(self._number)
 
