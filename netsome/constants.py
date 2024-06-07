@@ -1,4 +1,5 @@
 import enum
+import re
 
 
 class NUMERALSYSTEMS(enum.IntEnum):
