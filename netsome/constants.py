@@ -1,4 +1,5 @@
 import enum
+import re
 
 
 class BYTES(enum.IntEnum):
@@ -42,11 +43,21 @@ class BGP(enum.IntEnum):
     ASN_ORDER_MAX = BYTES.TWO - 1
 
 
-PORT_PATTERNS = {
-    "Ethernet": r"^[Ee]th(ernet)?(?P<value>\d+\/\d+)$",
-    "GigabitEthernet": r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)(?P<value>\d+\/\d+)$",
-    "FastEthernet": r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)(?P<value>\d+\/\d+)$",
-    "Loopback": r"^(Loopback|loopback|Lo|lo)(?P<value>\d+\/\d+)$",
-    "Management": r"^(Mgmt|mgmt|Ma(?=nagement$))(?P<value>\d+\/\d+)$",
-    "PortChannel": r"^(Port-?channel|port-?channel|Po)(?P<value>\d+\/\d+)$",
+IFACE_VAL_PATTERN = re.compile(r"(?P<value>\d+(\/\d+)?(\/\d+)?(\.(?P<sub_iface>\d+))?)")
+
+IFACE_PATTERNS = {
+    ("Ethernet", "Eth"): re.compile(rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.pattern}$"),
+    ("GigabitEthernet", "GE"): re.compile(
+        rf"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi){IFACE_VAL_PATTERN.pattern}$"
+    ),
+    ("FastEthernet", "FE"): re.compile(
+        rf"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa){IFACE_VAL_PATTERN.pattern}$"
+    ),
+    ("Loopback", "lo"): re.compile(r"^(Loopback|loopback|Lo|lo)(?P<value>\d+)$"),
+    ("Management", "Mgmt"): re.compile(r"^(Mgmt|mgmt|Ma(?=nagement$))(?P<value>\d+)$"),
+    ("PortChannel", "Po"): re.compile(
+        r"^(Port-?channel|port-?channel|Po)(?P<value>\d+)$"
+    ),
+    ("xe", "xe"): re.compile(r"^xe(?P<value>\d+)$"),
+    ("ce", "ce"): re.compile(r"^ce(?P<value>\d+)$"),
 }
