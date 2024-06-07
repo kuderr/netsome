@@ -23,12 +23,8 @@ class PortInterface:
         return f"PortInterface(type={self._type}, number={self._number})"
 
     def __eq__(self, other):
-        if not isinstance(other, PortInterface):
-            raise TypeError(
-                "Сomparison is available only between PortInterface objects"
-            )
-
-        if other._type != self._type:
-            raise TypeError("PortInterface types are different")
-
-        return other._number == self._number
+       return (
+            isinstance(other, self.__class__)
+            and (self._type == other._type)
+            and (self._number == other._number)
+        )
