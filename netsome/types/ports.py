@@ -1,6 +1,25 @@
 import re
 
 from netsome import constants as c
+import dataclasses
+
+
+class InterfaceValue:
+    # TODO: split list of vals to attrs
+    def __init__(self, string):
+        self.vals, self.sub_iface = self.parse_iface_val(string)
+
+    def __str__(self):
+        return (
+            f"{"/".join(self.vals)}.{self.sub_iface[0]}"
+            if self.sub_iface
+            else "/".join(self.vals)
+        )
+
+    @staticmethod
+    def parse_iface_val(string):
+        vals, *sub_iface = string.split(".")
+        return vals.split("/"), sub_iface
 
 
 class Interface:
@@ -16,7 +35,7 @@ class Interface:
         for (full_name, short_name), pattern in c.IFACE_PATTERNS.items():
             match = re.match(pattern, string)
             if match:
-                return full_name, short_name, match.group("value")
+                return full_name, short_name, InterfaceValue(match.group("value"))
 
         raise ValueError("Port type doesn't supports")
 
