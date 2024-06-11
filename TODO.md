@@ -7,18 +7,13 @@
 All:
 
 - [ ] constants for local, global etc. networks
-- [ ] tests
 
 IPv4Interface:
 
-- [x] implement
 - [ ] `__lt__`
 
 IPv4Network:
 
-- [x] .hosts with /31, /32 network
-- [x] catch .subnets with /32 prefxlen? **/32 networks is valid**
-- [ ] parse cidr 10/8, 10.2/16, 10.2.3/24, etc.
 - [ ] `__lt__`
 
 IPv6Address:
@@ -67,11 +62,10 @@ InterfaceName:
 
 ## other
 
-- [x] better imports `from netsome import types as nst; nst.IPv4Address(...)`
 - [ ] better error messages
 - [ ] docs
 - [ ] base classes in types to reuse code and DRY
 - [ ] tests
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
-- [ ] int/str for types ???
+- [ ] rewrite `__eq__` to return NotImplemented if not same class
