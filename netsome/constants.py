@@ -43,21 +43,32 @@ class BGP(enum.IntEnum):
     ASN_ORDER_MAX = BYTES.TWO - 1
 
 
-IFACE_VAL_PATTERN = re.compile(r"(?P<value>\d+(\/\d+)?(\/\d+)?(\.(?P<sub_iface>\d+))?)")
+class IFACE_VAL_PATTERN(enum.Enum):
+    VAL = re.compile(r"(?P<value>(\d+))")
+    VAL_EXTENDED = re.compile(rf"{VAL.pattern[:-1]}(\/\d+)?(\/\d+)?(\/\d+)?)")
+    SUB_IFACE = re.compile(r"(?P<sub_iface>\d+)")
+    VAL_SUB_IFACE = re.compile(rf"{VAL_EXTENDED.pattern[:-1]}(\.{SUB_IFACE.pattern})?)")
+
 
 IFACE_PATTERNS = {
-    ("Ethernet", "Eth"): re.compile(rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.pattern}$"),
+    ("Ethernet", "Eth"): re.compile(
+        rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+    ),
     ("GigabitEthernet", "GE"): re.compile(
-        rf"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi){IFACE_VAL_PATTERN.pattern}$"
+        rf"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi){IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
     ),
     ("FastEthernet", "FE"): re.compile(
-        rf"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa){IFACE_VAL_PATTERN.pattern}$"
+        rf"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa){IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
     ),
-    ("Loopback", "lo"): re.compile(r"^(Loopback|loopback|Lo|lo)(?P<value>\d+)$"),
-    ("Management", "Mgmt"): re.compile(r"^(Mgmt|mgmt|Ma(?=nagement$))(?P<value>\d+)$"),
+    ("Loopback", "lo"): re.compile(
+        rf"^(Loopback|loopback|Lo|lo){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+    ),
+    ("Management", "Mgmt"): re.compile(
+        rf"^(Mgmt|mgmt|Ma(?=nagement$)){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+    ),
     ("PortChannel", "Po"): re.compile(
-        r"^(Port-?channel|port-?channel|Po)(?P<value>\d+)$"
+        rf"^(Port-?channel|port-?channel|Po){IFACE_VAL_PATTERN.VAL.value.pattern}$"
     ),
-    ("xe", "xe"): re.compile(r"^xe(?P<value>\d+)$"),
-    ("ce", "ce"): re.compile(r"^ce(?P<value>\d+)$"),
+    ("xe", "xe"): re.compile(rf"^xe{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
+    ("ce", "ce"): re.compile(rf"^ce{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
 }
