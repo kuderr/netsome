@@ -8,17 +8,7 @@ class Interface:
     def __init__(self, string: str):
         self._type, self._value = self.map_port(string)
         self._full_name, self._short_name = c.IFACE_TYPES[self._type.name].value
-
-        vals, sub_iface = self.parse_iface_val(self._value)
-        self._sub_iface = int(sub_iface[0]) if sub_iface else None
-
-        # FIXME
-        vals = map(int, vals)
-        *lhs, self.port = vals
-        if lhs:
-            *lhs, self.slot = lhs
-            if lhs:
-                self.chassis = lhs[0]
+        self._split_value()
 
     @staticmethod
     def map_port(string):
@@ -29,10 +19,12 @@ class Interface:
 
         raise ValueError("Port type doesn't supports")
 
-    @staticmethod
-    def parse_iface_val(string):
-        vals, *sub_iface = string.split(c.DELIMITERS.DOT)
-        return vals.split(c.DELIMITERS.SLASH), sub_iface
+    def _split_value(self):
+        vals, *sub_iface = self._value.split(c.DELIMITERS.DOT)
+        self._sub_iface = int(sub_iface[0]) if sub_iface else None
+
+        vals = vals.split(c.DELIMITERS.SLASH)
+        self._chassis, self._slot, self._port = (vals + [None] * 2)[:3]
 
     @property
     def type(self):
@@ -41,6 +33,22 @@ class Interface:
     @property
     def value(self):
         return self._value
+
+    @property
+    def sub_iface(self):
+        return self._sub_iface
+
+    @property
+    def chassis(self):
+        return self._chassis
+
+    @property
+    def slot(self):
+        return self._slot
+
+    @property
+    def port(self):
+        return self._port
 
     @functools.cached_property
     def canonical_name(self):
