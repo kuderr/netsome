@@ -2,6 +2,7 @@ from netsome.types.bgp import ASN, Community
 from netsome.types.ipv4 import IPv4Address, IPv4Interface, IPv4Network
 from netsome.types.mac import MacAddress
 from netsome.types.vlans import VID
+from netsome.types.interfaces import Interface
 
 __all__ = [
     "ASN",
@@ -11,4 +12,5 @@ __all__ = [
     "IPv4Network",
     "MacAddress",
     "VID",
+    "Interface",
 ]
