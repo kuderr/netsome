@@ -73,3 +73,4 @@ InterfaceName:
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
 - [ ] rewrite `__eq__` to return NotImplemented if not same class
+- [ ] rename VID to VlanID
