@@ -56,7 +56,6 @@ class BGP(enum.IntEnum):
 
 
 class MAC(enum.IntEnum):
-
     ADDRESS_MIN = 0
     ADDRESS_MAX = BYTES.SIX - 1
 
@@ -65,3 +64,60 @@ class MAC(enum.IntEnum):
 
     NIC64_MAX = BYTES.FIVE - 1
     ADDRESS64_MAX = BYTES.EIGHT - 1
+
+
+class IFACE_VAL_PATTERN(enum.Enum):
+    VAL = re.compile(r"(?P<value>\d+)")
+    VAL_EXTENDED = re.compile(rf"{VAL.pattern[:-1]}" + r"((\/\d+)?){1,2})")
+    SUB_IFACE = re.compile(r"(?P<sub>\d+)")
+    VAL_SUB_IFACE = re.compile(rf"{VAL_EXTENDED.pattern[:-1]}(\.{SUB_IFACE.pattern})?)")
+
+
+# TODO(kuderr): add juniper interfaces
+class IFACE_TYPES(enum.Enum):
+    ETHERNET = enum.auto()
+    GIGABIT_ETHERNET = enum.auto()
+    FAST_ETHERNET = enum.auto()
+    LOOPBACK = enum.auto()
+    MANAGEMENT = enum.auto()
+    PORT_CHANNEL = enum.auto()
+    XE = enum.auto()
+    CE = enum.auto()
+
+
+IFACE_NAMES = {
+    # type: (long name, short name)
+    IFACE_TYPES.ETHERNET: ("Ethernet", "Eth"),
+    IFACE_TYPES.GIGABIT_ETHERNET: ("GigabitEthernet", "GE"),
+    IFACE_TYPES.FAST_ETHERNET: ("FastEthernet", "FE"),
+    IFACE_TYPES.LOOPBACK: ("Loopback", "lo"),
+    IFACE_TYPES.MANAGEMENT: ("Management", "Mgmt"),
+    IFACE_TYPES.PORT_CHANNEL: ("PortChannel", "Po"),
+    IFACE_TYPES.XE: ("xe", "xe"),
+    IFACE_TYPES.CE: ("ce", "ce"),
+}
+
+IFACE_PATTERNS = {
+    IFACE_TYPES.ETHERNET: re.compile(
+        rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+    ),
+    IFACE_TYPES.GIGABIT_ETHERNET: re.compile(
+        r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)"
+        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+    ),
+    IFACE_TYPES.FAST_ETHERNET: re.compile(
+        r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)"
+        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+    ),
+    IFACE_TYPES.LOOPBACK: re.compile(
+        rf"^([Ll]o(opback)?){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+    ),
+    IFACE_TYPES.MANAGEMENT: re.compile(
+        rf"^([Mm]gmt|Management){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+    ),
+    IFACE_TYPES.PORT_CHANNEL: re.compile(
+        rf"^([Pp]o(rt-?channel)?){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+    ),
+    IFACE_TYPES.XE: re.compile(rf"^xe{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
+    IFACE_TYPES.CE: re.compile(rf"^ce{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
+}
