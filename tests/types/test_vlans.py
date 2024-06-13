@@ -45,6 +45,23 @@ def test_lt(vid):
 
 
 @vids
+def test_le(vid):
+    assert vid <= types.VID(vid.vid + 1)
+    assert vid <= types.VID(vid.vid)
+
+
+@vids
+def test_gt(vid):
+    assert types.VID(vid.vid + 1) > vid
+
+
+@vids
+def test_ge(vid):
+    assert types.VID(vid.vid + 1) >= vid
+    assert types.VID(vid.vid) >= vid
+
+
+@vids
 def test_hash(vid):
     assert hash(vid) == hash(vid.vid)
 

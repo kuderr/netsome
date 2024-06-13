@@ -277,6 +277,17 @@ def test_hash(mac):
         pytest.lazy_fixture("multicast_mac"),
     ),
 )
+def test_eq(mac):
+    assert mac == types.MacAddress.from_int(mac._addr)
+
+
+@pytest.mark.parametrize(
+    "mac",
+    (
+        pytest.lazy_fixture("some_mac"),
+        pytest.lazy_fixture("multicast_mac"),
+    ),
+)
 def test_lt(mac):
     assert mac < types.MacAddress.from_int(mac._addr + 1)
 
@@ -288,5 +299,29 @@ def test_lt(mac):
         pytest.lazy_fixture("multicast_mac"),
     ),
 )
-def test_eq(mac):
-    assert mac == types.MacAddress.from_int(mac._addr)
+def test_le(mac):
+    assert mac <= types.MacAddress.from_int(mac._addr + 1)
+    assert mac <= types.MacAddress.from_int(mac._addr)
+
+
+@pytest.mark.parametrize(
+    "mac",
+    (
+        pytest.lazy_fixture("some_mac"),
+        pytest.lazy_fixture("multicast_mac"),
+    ),
+)
+def test_gt(mac):
+    assert types.MacAddress.from_int(mac._addr + 1) > mac
+
+
+@pytest.mark.parametrize(
+    "mac",
+    (
+        pytest.lazy_fixture("some_mac"),
+        pytest.lazy_fixture("multicast_mac"),
+    ),
+)
+def test_ge(mac):
+    assert types.MacAddress.from_int(mac._addr + 1) >= mac
+    assert types.MacAddress.from_int(mac._addr) >= mac
