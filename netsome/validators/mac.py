@@ -5,7 +5,6 @@ from netsome import constants as c
 
 # TODO: make common
 def validate_hex_string(string: str, size: int) -> None:
-
     # TODO: make common
     if not isinstance(string, str):
         raise TypeError
