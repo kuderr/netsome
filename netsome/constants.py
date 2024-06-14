@@ -74,11 +74,15 @@ class IFACE_VAL_PATTERN(enum.Enum):
 
 
 # TODO(kuderr): add juniper interfaces
-class IFACE_TYPES(enum.Enum):
+class IFACE_TYPES(str, enum.Enum):
+    def _generate_next_value_(name, start, count, last_values):
+        return name
+
     ETHERNET = enum.auto()
     GIGABIT_ETHERNET = enum.auto()
     FAST_ETHERNET = enum.auto()
     LOOPBACK = enum.auto()
+    VLAN = enum.auto()
     MANAGEMENT = enum.auto()
     PORT_CHANNEL = enum.auto()
     XE = enum.auto()
@@ -91,33 +95,51 @@ IFACE_NAMES = {
     IFACE_TYPES.GIGABIT_ETHERNET: ("GigabitEthernet", "GE"),
     IFACE_TYPES.FAST_ETHERNET: ("FastEthernet", "FE"),
     IFACE_TYPES.LOOPBACK: ("Loopback", "lo"),
+    IFACE_TYPES.VLAN: ("Vlan", "Vlan"),
     IFACE_TYPES.MANAGEMENT: ("Management", "Mgmt"),
     IFACE_TYPES.PORT_CHANNEL: ("PortChannel", "Po"),
     IFACE_TYPES.XE: ("xe", "xe"),
     IFACE_TYPES.CE: ("ce", "ce"),
 }
 
+# TODO(kuderr): refactor
 IFACE_PATTERNS = {
     IFACE_TYPES.ETHERNET: re.compile(
-        rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+        rf"^[Ee]th(ernet)?{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
+        re.IGNORECASE,
     ),
     IFACE_TYPES.GIGABIT_ETHERNET: re.compile(
         r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)"
-        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
+        re.IGNORECASE,
     ),
     IFACE_TYPES.FAST_ETHERNET: re.compile(
         r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)"
-        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$"
+        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
+        re.IGNORECASE,
     ),
     IFACE_TYPES.LOOPBACK: re.compile(
-        rf"^([Ll]o(opback)?){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+        rf"^(lo(opback)?){IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
+    ),
+    IFACE_TYPES.VLAN: re.compile(
+        rf"^(vlan){IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
     ),
     IFACE_TYPES.MANAGEMENT: re.compile(
-        rf"^([Mm]gmt|Management){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+        rf"^(mgmt|Management){IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
     ),
     IFACE_TYPES.PORT_CHANNEL: re.compile(
-        rf"^([Pp]o(rt-?channel)?){IFACE_VAL_PATTERN.VAL.value.pattern}$"
+        rf"^(po(rt-?channel)?){IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
     ),
-    IFACE_TYPES.XE: re.compile(rf"^xe{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
-    IFACE_TYPES.CE: re.compile(rf"^ce{IFACE_VAL_PATTERN.VAL.value.pattern}$"),
+    IFACE_TYPES.XE: re.compile(
+        rf"^xe{IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
+    ),
+    IFACE_TYPES.CE: re.compile(
+        rf"^ce{IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        re.IGNORECASE,
+    ),
 }
