@@ -52,13 +52,13 @@ def test_le(vid):
 
 @vids
 def test_gt(vid):
-    assert types.VID(vid.vid + 1) > vid
+    assert vid > types.VID(vid.vid - 1)
 
 
 @vids
 def test_ge(vid):
-    assert types.VID(vid.vid + 1) >= vid
-    assert types.VID(vid.vid) >= vid
+    assert vid >= types.VID(vid.vid - 1)
+    assert vid >= types.VID(vid.vid)
 
 
 @vids

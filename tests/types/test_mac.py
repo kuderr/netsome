@@ -312,7 +312,7 @@ def test_le(mac):
     ),
 )
 def test_gt(mac):
-    assert types.MacAddress.from_int(mac._addr + 1) > mac
+    assert mac > types.MacAddress.from_int(mac._addr - 1)
 
 
 @pytest.mark.parametrize(
@@ -323,5 +323,5 @@ def test_gt(mac):
     ),
 )
 def test_ge(mac):
-    assert types.MacAddress.from_int(mac._addr + 1) >= mac
-    assert types.MacAddress.from_int(mac._addr) >= mac
+    assert mac >= types.MacAddress.from_int(mac._addr - 1)
+    assert mac >= types.MacAddress.from_int(mac._addr)
