@@ -7,6 +7,7 @@
 All:
 
 - [ ] constants for local, global etc. networks
+- [ ] link constants to classes
 
 IPv4Interface:
 
@@ -15,6 +16,7 @@ IPv4Interface:
 IPv4Network:
 
 - [ ] `__lt__`
+- [ ] contains for IPv4Address, IPv4Network
 
 IPv6Address:
 

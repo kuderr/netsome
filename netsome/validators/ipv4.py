@@ -1,6 +1,15 @@
 from netsome import constants as c
 
 
+def validate_cidr(string: str) -> None:
+    if not isinstance(string, str):
+        raise TypeError("Invalid type")
+
+    addr, prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
+    validate_address_str(addr)
+    validate_prefixlen_str(prefixlen)
+
+
 def validate_address_str(string: str) -> None:
     if not isinstance(string, str):
         raise TypeError("Invalid type")

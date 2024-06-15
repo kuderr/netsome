@@ -22,3 +22,8 @@ def some_mac():
 @pytest.fixture
 def multicast_mac():
     return types.MacAddress("010000ddeeff")
+
+
+@pytest.fixture
+def ipv4_addr():
+    return types.IPv4Address("1.1.1.1")

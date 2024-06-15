@@ -29,6 +29,8 @@ class IPv4Address:
 
     @classmethod
     def from_cidr(cls, string: str) -> "IPv4Address":
+        valids.validate_cidr(string)
+
         addr, prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
         if int(prefixlen) != cls.PREFIXLEN_MAX:
             raise ValueError(
@@ -72,10 +74,9 @@ class IPv4Address:
 
 class IPv4Network:
     def __init__(self, network: str) -> None:
-        # TODO(d.burmistrov): move this block into util? (validate + convert)
+        valids.validate_cidr(network)
+
         addr, prefixlen = network.split(c.DELIMITERS.SLASH, maxsplit=1)
-        valids.validate_address_str(addr)
-        valids.validate_prefixlen_str(prefixlen)
         prefixlen = int(prefixlen)
         valids.validate_network_int(convs.address_to_int(addr), prefixlen)
 
@@ -212,6 +213,7 @@ class IPv4Network:
 
 class IPv4Interface:
     def __init__(self, address: str) -> None:
+        valids.validate_cidr(address)
         addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
         self._addr = IPv4Address(addr)
 
