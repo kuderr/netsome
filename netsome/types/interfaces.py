@@ -12,10 +12,10 @@ class Interface:
         self._type, self._value, self._sub = self.parse_string(string)
 
     def parse_string(self, string):
-        for type, pattern in self.IFACE_PATTERNS.items():
+        for tp, pattern in self.IFACE_PATTERNS.items():
             if match := re.match(pattern, string):
                 groups = match.groupdict()
-                return type, groups["value"], groups.get("sub")
+                return tp, groups["value"], groups.get("sub")
 
         raise ValueError("Port type doesn't supports")
 

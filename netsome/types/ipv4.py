@@ -7,7 +7,6 @@ from netsome.validators import ipv4 as valids
 
 
 class IPv4Address:
-
     PREFIXLEN_MIN = c.IPV4.PREFIXLEN_MIN
     PREFIXLEN_MAX = c.IPV4.PREFIXLEN_MAX
 

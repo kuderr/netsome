@@ -5,8 +5,6 @@ from netsome.validators import vlans as valids
 
 
 class VID:
-    """VLAN ID"""
-
     MIN = c.VLAN.VID_MIN
     MAX = c.VLAN.VID_MAX
     DEFAULT = c.VLAN.VID_DEFAULT

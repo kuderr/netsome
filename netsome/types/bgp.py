@@ -4,11 +4,11 @@ from netsome import constants as c
 from netsome._converters import bgp as convs
 from netsome.validators import bgp as valids
 
+
 # TODO(kuderr): can move some common stuff to Base class
 
 
 class ASN:
-
     MIN = c.BGP.ASN_MIN
     MAX = c.BGP.ASN_MAX
     ORDER_MAX = c.BGP.ASN_ORDER_MAX

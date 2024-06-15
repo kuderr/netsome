@@ -5,12 +5,18 @@ requires = ["poetry-core"]
 [tool.poe.env]
 DIRS = "netsome tests"
 
+[tool.poe.tasks.lint]
+default_item_type = "cmd"
+sequence = [
+  "poetry run ruff check --no-fix $DIRS",
+  "poetry run toml-sort --check pyproject.toml"
+]
+
 [tool.poe.tasks.pretty]
 default_item_type = "cmd"
 sequence = [
-  "poetry run autoflake --in-place --verbose --recursive $DIRS",
-  "poetry run black $DIRS",
-  "poetry run isort $DIRS",
+  "poetry run ruff check --fix $DIRS",
+  "poetry run ruff format $DIRS",
   "poetry run toml-sort --in-place --all pyproject.toml"
 ]
 
@@ -46,3 +52,6 @@ toml-sort = "^0.23.1"
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/kuderr/netsome/issues"
 "Homepage" = "https://github.com/kuderr/netsome"
+
+[tool.pytest.ini_options]
+addopts = "-ra --log-level=DEBUG --showlocals --verbose"

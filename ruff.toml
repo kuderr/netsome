@@ -1,0 +1,62 @@
+src = ["netsome", "tests"]
+
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    ".idea",
+    "__pypackages__",
+    "_build",
+    "site-packages",
+    "htmlcov",
+    "dist"
+]
+
+line-length = 88
+indent-width = 4
+
+target-version = "py312"
+
+# Enumerate all fixed violations.
+show-fixes = true
+
+
+[lint]
+select = [
+    "E",    # pycodestyle
+    "W",    # pycodestyle
+    "F",    # Pyflakes
+    "I",    # isort
+    "C901", # McCabe complexity
+    "A",    # flake8-builtins
+    "PTH",  # flake8-use-pathlib
+]
+fixable = ["ALL"]
+dummy-variable-rgx = "^_$"
+
+[lint.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
+
+[lint.flake8-quotes]
+avoid-escape = false
+
+[lint.isort]
+force-single-line = true
+known-first-party = ["netsome", "tests"]
+lines-after-imports = 2
+
+[lint.pycodestyle]
+ignore-overlong-task-comments = true
+max-line-length = 88
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+docstring-code-format = false
+docstring-code-line-length = 88
