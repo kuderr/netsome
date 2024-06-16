@@ -52,3 +52,7 @@ def min_community():
 @pytest.fixture
 def max_community():
     return types.Community(4_294_967_295)
+
+
+def ipv4_net():
+    return types.IPv4Network("1.1.1.0/24")
