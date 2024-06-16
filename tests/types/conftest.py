@@ -27,3 +27,8 @@ def multicast_mac():
 @pytest.fixture
 def ipv4_addr():
     return types.IPv4Address("1.1.1.1")
+
+
+@pytest.fixture
+def ipv4_net():
+    return types.IPv4Network("1.1.1.0/24")
