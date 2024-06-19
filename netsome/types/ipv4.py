@@ -232,6 +232,17 @@ class IPv4Network:
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)
 
+    def is_subnet(self, subnet: "IPv4Network") -> bool:
+        if not isinstance(subnet, self.__class__):
+            raise TypeError
+
+        if self == subnet:
+            return False
+
+        return (
+            self.netaddress <= subnet.netaddress and self.broadcast >= subnet.broadcast
+        )
+
 
 class IPv4Interface:
     def __init__(self, address: str) -> None:
