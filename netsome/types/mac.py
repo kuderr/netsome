@@ -73,6 +73,7 @@ class MacAddress:
     def parse(cls, addr: str | int) -> "MacAddress":
         # TODO: can collect all this from cls attrs?
         from_fmts = (
+            cls,
             cls.from_dashed,
             cls.from_coloned,
             cls.from_dotted,

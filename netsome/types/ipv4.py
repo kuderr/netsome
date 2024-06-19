@@ -1,3 +1,4 @@
+import contextlib
 import functools
 import typing as t
 
@@ -112,6 +113,12 @@ class IPv4Network:
         return obj
 
     @classmethod
+    def from_address(cls, string: str) -> "IPv4Network":
+        obj = cls.__new__(cls)
+        obj._populate(IPv4Address(string), c.IPV4.PREFIXLEN_MAX.value)
+        return obj
+
+    @classmethod
     def from_octets(cls, string: str) -> "IPv4Network":
         octets = string.split(c.DELIMITERS.DOT)
         if len(octets) > c.IPV4.OCTETS_COUNT:
@@ -128,6 +135,21 @@ class IPv4Network:
         obj._populate(IPv4Address(addr), prefixlen)
 
         return obj
+
+    @classmethod
+    def parse(cls, string: str) -> "IPv4Network":
+        from_fmts = (
+            cls,
+            cls.from_address,
+            cls.from_cidr,
+            cls.from_octets,
+        )
+
+        for fmt in from_fmts:
+            with contextlib.suppress(Exception):
+                return fmt(string)
+
+        raise ValueError
 
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen
@@ -223,8 +245,7 @@ class IPv4Interface:
         self._network = IPv4Network.from_int(netaddr, prefixlen)
 
     def __repr__(self) -> str:
-        ip = c.DELIMITERS.SLASH.join_as_str(self._addr.address, self._network.prefixlen)
-        return f'{self.__class__.__name__}("{ip}")'
+        return f'{self.__class__.__name__}("{self.ip}")'
 
     def __hash__(self) -> int:
         return hash((self._addr, self._network))
@@ -243,3 +264,9 @@ class IPv4Interface:
     @property
     def address(self) -> "IPv4Address":
         return self._addr
+
+    @functools.cached_property
+    def ip(self) -> str:
+        return c.DELIMITERS.SLASH.join_as_str(
+            self._addr.address, self._network.prefixlen
+        )
