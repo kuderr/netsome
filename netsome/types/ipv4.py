@@ -232,28 +232,61 @@ class IPv4Network:
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)
 
-    def is_subnet(self, subnet: "IPv4Network") -> bool:
+    def contains_subnet(self, subnet: "IPv4Network") -> bool:
         if not isinstance(subnet, self.__class__):
             raise TypeError
 
-        if self == subnet:
-            return False
-
         return (
-            self.netaddress <= subnet.netaddress and self.broadcast >= subnet.broadcast
+            self != subnet
+            and self.netaddress <= subnet.netaddress
+            and self.broadcast >= subnet.broadcast
         )
+
+    def contains_address(self, address: IPv4Address) -> bool:
+        if not isinstance(address, IPv4Address):
+            raise TypeError
+
+        return self.netaddress <= address <= self.broadcast
 
 
 class IPv4Interface:
     def __init__(self, address: str) -> None:
         valids.validate_cidr(address)
         addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
-        self._addr = IPv4Address(addr)
+        self._populate(addr, prefixlen)
 
+    @classmethod
+    def from_simple(cls, address: str, prefixlen: str) -> "IPv4Interface":
+        obj = cls.__new__(cls)
+        obj._populate(address, prefixlen)
+        return obj
+
+    def _populate(self, address: str, prefixlen: str) -> None:
         prefixlen = int(prefixlen)
+        self._addr = IPv4Address(address)
         netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen)
         netaddr = int(self._addr) & netmask
         self._network = IPv4Network.from_int(netaddr, prefixlen)
+
+    @classmethod
+    def from_objects(
+        cls,
+        address: IPv4Address,
+        network: IPv4Network,
+    ) -> "IPv4Interface":
+        if not isinstance(address, IPv4Address):
+            raise TypeError
+
+        if not isinstance(network, IPv4Network):
+            raise TypeError
+
+        if not network.contains_address(address):
+            raise ValueError
+
+        obj = cls.__new__(cls)
+        obj._addr = address
+        obj._network = network
+        return obj
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.ip}")'
