@@ -36,14 +36,20 @@ class ASN:
         valids.validate_asplain(number)
         return cls(number)
 
-    def to_asdot(self):
+    def to_asdot(self) -> str:
         return convs.asplain_to_asdot(self._number)
 
-    def to_asdotplus(self):
+    def to_asdotplus(self) -> str:
         return convs.asplain_to_asdotplus(self._number)
 
-    def to_asplain(self):
+    def to_asplain(self) -> str:
+        return str(self._number)
+
+    def __int__(self) -> int:
         return self._number
+
+    def __str__(self) -> str:
+        return self.to_asplain()
 
     def __eq__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._number == other._number)
@@ -80,6 +86,12 @@ class Community:
     def from_str(cls, string: str) -> "Community":
         valids.validate_community(string)
         return cls(convs.community_to_asplain(string))
+
+    def __int__(self) -> int:
+        return self._number
+
+    def __str__(self) -> str:
+        return convs.asplain_to_community(self._number)
 
     def __eq__(self, other: t.Any) -> bool:
         return isinstance(other, self.__class__) and (self._number == other._number)

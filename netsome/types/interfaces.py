@@ -44,6 +44,9 @@ class Interface:
     def __hash__(self) -> int:
         return hash((self._type, self._value, self._sub))
 
+    def __str__(self) -> str:
+        return self.canonical_name
+
     def __repr__(self):
         return f'{self.__class__.__name__}("{self.canonical_name}")'
 

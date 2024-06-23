@@ -51,6 +51,9 @@ class IPv4Address:
     def __int__(self) -> int:
         return self._addr
 
+    def __str__(self) -> str:
+        return self.address
+
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
 
@@ -153,6 +156,9 @@ class IPv4Network:
 
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen
+
+    def __str__(self) -> str:
+        return self.address
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
@@ -288,6 +294,12 @@ class IPv4Interface:
         obj._network = network
         return obj
 
+    def as_tuple(self) -> tuple[IPv4Address, IPv4Network]:
+        return self.address, self.network
+
+    def __str__(self) -> str:
+        return self.ip
+
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.ip}")'
 
@@ -302,12 +314,12 @@ class IPv4Interface:
         )
 
     @property
-    def network(self) -> "IPv4Network":
-        return self._network
-
-    @property
     def address(self) -> "IPv4Address":
         return self._addr
+
+    @property
+    def network(self) -> "IPv4Network":
+        return self._network
 
     @functools.cached_property
     def ip(self) -> str:

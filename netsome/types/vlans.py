@@ -37,6 +37,12 @@ class VID:
     def __hash__(self) -> int:
         return hash(self._vid)
 
+    def __int__(self) -> int:
+        return self._vid
+
+    def __str__(self) -> str:
+        return str(self._vid)
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._vid})"
 

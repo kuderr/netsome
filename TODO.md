@@ -32,10 +32,6 @@ IPv6Network:
 
 ### mac
 
-MacAddress:
-
-- [ ] to_int/`__int__` ?
-
 Mac64Address:
 
 - [ ] implement

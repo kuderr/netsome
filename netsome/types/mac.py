@@ -97,6 +97,12 @@ class MacAddress:
 
         return delimiter.join(groups)
 
+    def __int__(self) -> int:
+        return self._addr
+
+    def __str__(self) -> str:
+        return self.address
+
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.address}")'
 
