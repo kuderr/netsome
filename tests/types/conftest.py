@@ -27,3 +27,13 @@ def multicast_mac():
 @pytest.fixture
 def ipv4_addr():
     return types.IPv4Address("1.1.1.1")
+
+
+@pytest.fixture
+def min_asn():
+    return types.ASN(0)
+
+
+@pytest.fixture
+def max_asn():
+    return types.ASN(4_294_967_295)
