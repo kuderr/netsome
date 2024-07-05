@@ -24,7 +24,7 @@ def test_init_value_error(test_input):
 @pytest.mark.parametrize(
     ("community", "number"), ((pytest.lazy_fixture("min_community"), 0),)
 )
-def test_property_bumber(community, number):
+def test_property_number(community, number):
     assert community.number == number
 
 

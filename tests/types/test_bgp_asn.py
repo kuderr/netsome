@@ -22,7 +22,7 @@ def test_init_value_error(test_input):
 
 
 @pytest.mark.parametrize(("asn", "number"), ((pytest.lazy_fixture("min_asn"), 0),))
-def test_property_bumber(asn, number):
+def test_property_number(asn, number):
     assert asn.number == number
 
 
