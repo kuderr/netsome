@@ -37,3 +37,13 @@ def min_asn():
 @pytest.fixture
 def max_asn():
     return types.ASN(4_294_967_295)
+
+
+@pytest.fixture
+def min_community():
+    return types.Community(0)
+
+
+@pytest.fixture
+def max_community():
+    return types.Community(4_294_967_295)
