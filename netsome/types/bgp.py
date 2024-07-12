@@ -1,3 +1,4 @@
+import contextlib
 import typing as t
 
 from netsome import constants as c
@@ -32,9 +33,23 @@ class ASN:
         return cls(convs.asdotplus_to_asplain(string))
 
     @classmethod
-    def from_asplain(cls, number: int) -> "ASN":
-        valids.validate_asplain(number)
-        return cls(number)
+    def from_asplain(cls, string: str) -> "ASN":
+        return cls(int(string))
+
+    @classmethod
+    def parse(cls, value: str | int) -> "ASN":
+        from_fmts = (
+            cls,
+            cls.from_asdot,
+            cls.from_asdotplus,
+            cls.from_asplain,
+        )
+
+        for fmt in from_fmts:
+            with contextlib.suppress(Exception):
+                return fmt(value)
+
+        raise ValueError
 
     def to_asdot(self) -> str:
         return convs.asplain_to_asdot(self._number)
