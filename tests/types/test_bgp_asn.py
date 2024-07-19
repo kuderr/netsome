@@ -1,6 +1,5 @@
 import pytest
 
-from netsome import constants as c
 from netsome import types
 
 
@@ -51,12 +50,38 @@ def test_from_asdotplus(string, expected):
 @pytest.mark.parametrize(
     ("string", "expected"),
     (
-        (0, pytest.lazy_fixture("min_asn")),
-        (4_294_967_295, pytest.lazy_fixture("max_asn")),
+        ("0", pytest.lazy_fixture("min_asn")),
+        ("4294967295", pytest.lazy_fixture("max_asn")),
     ),
 )
 def test_from_asplain(string, expected):
     assert types.ASN.from_asplain(string) == expected
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    (
+        (0, pytest.lazy_fixture("min_asn")),
+        (4_294_967_295, pytest.lazy_fixture("max_asn")),
+        ("0", pytest.lazy_fixture("min_asn")),
+        ("65535.65535", pytest.lazy_fixture("max_asn")),
+        ("0.0", pytest.lazy_fixture("min_asn")),
+        ("65535.65535", pytest.lazy_fixture("max_asn")),
+        ("0", pytest.lazy_fixture("min_asn")),
+        ("4294967295", pytest.lazy_fixture("max_asn")),
+    ),
+)
+def test_parse_ok(value, expected):
+    assert types.ASN.parse(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    (-1, 4_294_967_296, "foobar"),
+)
+def test_parse_value_error(value):
+    with pytest.raises(ValueError):
+        assert types.ASN.parse(value)
 
 
 @pytest.mark.parametrize(

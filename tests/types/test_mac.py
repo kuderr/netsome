@@ -251,6 +251,28 @@ def test_to_str(mac, params, expected):
 @pytest.mark.parametrize(
     ("mac", "expected"),
     (
+        (pytest.lazy_fixture("some_mac"), 187723572702975),
+        (pytest.lazy_fixture("multicast_mac"), 1099526172415),
+    ),
+)
+def test_int(mac, expected):
+    assert int(mac) == expected
+
+
+@pytest.mark.parametrize(
+    ("mac", "expected"),
+    (
+        (pytest.lazy_fixture("some_mac"), "aabbccddeeff"),
+        (pytest.lazy_fixture("multicast_mac"), "010000ddeeff"),
+    ),
+)
+def test_str(mac, expected):
+    assert str(mac) == expected
+
+
+@pytest.mark.parametrize(
+    ("mac", "expected"),
+    (
         (pytest.lazy_fixture("some_mac"), 'MacAddress("aabbccddeeff")'),
         (pytest.lazy_fixture("multicast_mac"), 'MacAddress("010000ddeeff")'),
     ),

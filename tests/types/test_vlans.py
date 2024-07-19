@@ -91,3 +91,25 @@ def test_is_reserved(vid, is_reserved):
 )
 def test_is_default(vid, is_default):
     assert vid.is_default() is is_default
+
+
+@pytest.mark.parametrize(
+    ("vid", "expected"),
+    (
+        (pytest.lazy_fixture("default_vid"), 1),
+        (pytest.lazy_fixture("mid_vid"), 2047),
+    ),
+)
+def test_init(vid, expected):
+    assert int(vid) == expected
+
+
+@pytest.mark.parametrize(
+    ("vid", "expected"),
+    (
+        (pytest.lazy_fixture("default_vid"), "1"),
+        (pytest.lazy_fixture("mid_vid"), "2047"),
+    ),
+)
+def test_str(vid, expected):
+    assert str(vid) == expected

@@ -6,7 +6,7 @@ from netsome import types
 
 @pytest.fixture
 def default_vid():
-    return types.VID(c.VLAN.VID_DEFAULT)
+    return types.VID(1)
 
 
 @pytest.fixture
