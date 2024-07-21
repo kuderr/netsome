@@ -30,6 +30,11 @@ def ipv4_addr():
 
 
 @pytest.fixture
+def ipv4_net():
+    return types.IPv4Network("1.1.1.0/24")
+
+
+@pytest.fixture
 def min_asn():
     return types.ASN(0)
 
