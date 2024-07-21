@@ -144,6 +144,19 @@ def test_int(addr, expected):
     (
         (
             pytest.lazy_fixture("ipv4_addr"),
+            "1.1.1.1",
+        ),
+    ),
+)
+def test_str(addr, expected):
+    assert str(addr) == expected
+
+
+@pytest.mark.parametrize(
+    ("addr", "expected"),
+    (
+        (
+            pytest.lazy_fixture("ipv4_addr"),
             'IPv4Address("1.1.1.1")',
         ),
     ),
