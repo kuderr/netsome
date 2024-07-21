@@ -30,6 +30,8 @@ IPv6Network:
 
 - [ ] implement
 
+IPAddress/IPNetwork/IPInterface? (ipv4 + ipv6)
+
 ### mac
 
 Mac64Address:
