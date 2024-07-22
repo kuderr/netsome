@@ -256,20 +256,14 @@ def test_repr(ipv4net, expected):
 
 
 @pytest.mark.parametrize(
-    ("ipv4net", "expected"),
+    "ipv4net",
     (
-        (
-            pytest.lazy_fixture("ipv4_net"),
-            6326144546450531412,
-        ),
-        (
-            types.IPv4Network("1.0.0.0/16"),
-            -9177772746305621098,
-        ),
+        pytest.lazy_fixture("ipv4_net"),
+        types.IPv4Network("1.0.0.0/16"),
     ),
 )
-def test_hash(ipv4net, expected):
-    assert hash(ipv4net) == expected
+def test_hash(ipv4net):
+    assert hash(ipv4net) == hash(ipv4net.as_tuple())
 
 
 @pytest.mark.parametrize(
