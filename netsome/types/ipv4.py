@@ -249,7 +249,7 @@ class IPv4Network:
         )
 
     def contains_address(self, address: IPv4Address) -> bool:
-        if not isinstance(address, IPv4Address):
+        if not isinstance(address, self.__class__):
             raise TypeError
 
         return self.netaddress <= address <= self.broadcast
