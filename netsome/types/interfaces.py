@@ -54,4 +54,8 @@ class Interface:
         if not isinstance(other, self.__class__):
             return NotImplemented
 
-        return (self._full_name == other._full_name) and (self._value == other._value)
+        return (
+            (self._type == other._type)
+            and (self._value == other._value)
+            and (self._sub == other._sub)
+        )
