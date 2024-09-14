@@ -80,7 +80,7 @@ def validate_prefixlen_str(string: str) -> None:
 
     # TODO(dm.a.kudryavtsev): можно вынести в валидатор строки на проверку что внутри число
     if not (string.isascii() and string.isdigit()):
-        raise ValueError(f'Provided value "{string}" has invalid prefixlen')
+        raise ValueError(f'Provided value "{string}" is invalid prefixlen')
 
     validate_prefixlen_int(int(string))
 
