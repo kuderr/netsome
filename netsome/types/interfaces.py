@@ -17,7 +17,7 @@ class Interface:
                 groups = match.groupdict()
                 return tp, groups["value"], groups.get("sub")
 
-        raise ValueError("Port type doesn't supports")
+        raise ValueError(f'Unable to parse "{string}" of type "{type(string)}"')
 
     @property
     def type(self):

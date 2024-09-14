@@ -44,12 +44,6 @@ DnsRecord:
 
 - [ ] implement?
 
-### ports
-
-InterfaceName:
-
-- [ ] implement
-
 ## validators
 
 - [ ] build common set of validators:
@@ -59,17 +53,12 @@ InterfaceName:
 
 ## utils
 
-- [ ] dns resolve ?
 - [ ] ranges/pools ?
-- [ ] mappings:
-  - [ ] oui mapping ?
 
 ## other
 
-- [ ] better error messages
 - [ ] docs
 - [ ] base classes in types to reuse code and DRY
-- [ ] tests
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
 - [ ] rewrite `__eq__` to return NotImplemented if not same class

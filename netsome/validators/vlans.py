@@ -3,10 +3,11 @@ from netsome import constants as c
 
 def validate_vid(vid: int) -> None:
     if not isinstance(vid, int):
-        raise TypeError("Invalid type, must be int")
+        raise TypeError(
+            f'Provided invalid value "{vid}" of type "{type(vid)}", int expected'
+        )
 
     if not (c.VLAN.VID_MIN <= vid <= c.VLAN.VID_MAX):
         raise ValueError(
-            "Invalid vlan number. Must be in range "
-            + c.DELIMITERS.DASH.join_as_str(c.VLAN.VID_MIN, c.VLAN.VID_MAX)
+            f'Value "{vid}" must be in range {c.VLAN.VID_MIN}-{c.VLAN.VID_MAX}'
         )

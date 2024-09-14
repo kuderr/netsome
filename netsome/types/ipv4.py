@@ -111,7 +111,10 @@ class IPv4Network:
             prefixlen = prefixlen[0]
             valids.validate_prefixlen_str(prefixlen)
             if obj.prefixlen != int(prefixlen):
-                raise ValueError()
+                raise ValueError(
+                    f'Provided prefixlen "{prefixlen}" is invalid for network "{addr}",'
+                    f' should be "{obj.prefixlen}"'
+                )
 
         return obj
 
@@ -125,7 +128,10 @@ class IPv4Network:
     def from_octets(cls, string: str) -> "IPv4Network":
         octets = string.split(c.DELIMITERS.DOT)
         if len(octets) > c.IPV4.OCTETS_COUNT:
-            raise ValueError()
+            raise ValueError(
+                f'Provided value "{string}" should have'
+                f' less than "{c.IPV4.OCTETS_COUNT}" octets'
+            )
 
         for octet in octets:
             valids.validate_octet_str(octet)
@@ -152,7 +158,7 @@ class IPv4Network:
             with contextlib.suppress(Exception):
                 return fmt(string)
 
-        raise ValueError
+        raise ValueError(f'Unable to parse "{string}" of type "{type(string)}"')
 
     def as_tuple(self) -> tuple[int, int]:
         return int(self.netaddress), self._prefixlen
@@ -240,7 +246,9 @@ class IPv4Network:
 
     def contains_subnet(self, subnet: "IPv4Network") -> bool:
         if not isinstance(subnet, self.__class__):
-            raise TypeError
+            raise TypeError(
+                f'Unable to process value "{subnet}" of type "{type(subnet)}"'
+            )
 
         return (
             self != subnet
@@ -250,7 +258,9 @@ class IPv4Network:
 
     def contains_address(self, address: IPv4Address) -> bool:
         if not isinstance(address, IPv4Address):
-            raise TypeError
+            raise TypeError(
+                f'Unable to process value "{address}" of type "{type(address)}"'
+            )
 
         return self.netaddress <= address <= self.broadcast
 
@@ -281,13 +291,13 @@ class IPv4Interface:
         network: IPv4Network,
     ) -> "IPv4Interface":
         if not isinstance(address, IPv4Address):
-            raise TypeError
+            raise TypeError(f'Unable to create "{cls.__name__}" from "{address=}"')
 
         if not isinstance(network, IPv4Network):
-            raise TypeError
+            raise TypeError(f'Unable to create "{cls.__name__}" from "{network=}"')
 
         if not network.contains_address(address):
-            raise ValueError
+            raise ValueError(f'Provided "{network=}" doesnt contain "{address=}"')
 
         obj = cls.__new__(cls)
         obj._addr = address
