@@ -84,7 +84,7 @@ class MacAddress:
             with contextlib.suppress(Exception):
                 return fmt(addr)
 
-        raise ValueError
+        raise ValueError(f'Unable to parse "{addr}" of type "{type(addr)}"')
 
     @functools.lru_cache
     def to_str(

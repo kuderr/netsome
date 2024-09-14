@@ -49,7 +49,7 @@ class ASN:
             with contextlib.suppress(Exception):
                 return fmt(value)
 
-        raise ValueError
+        raise ValueError(f'Unable to parse "{value}" of type "{type(value)}"')
 
     def to_asdot(self) -> str:
         return convs.asplain_to_asdot(self._number)
