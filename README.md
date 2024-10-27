@@ -37,6 +37,7 @@ print(asn.to_asplain())  # "4244897793"
 # Manage VLAN IDs
 vid = VID(100)
 print(vid.is_reserved())  # False
+```
 
 # Authors
 
