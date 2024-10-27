@@ -8,6 +8,27 @@ from netsome.validators import ipv4 as valids
 
 
 class IPv4Address:
+    """
+    Represents an IPv4 address.
+
+    Class provides a way to store and manipulate individual IPv4 addresses.
+    Addresses can be created from strings in dotted decimal notation or integer values.
+
+    Args:
+        address (str): IPv4 address in dotted decimal notation (e.g. "192.168.1.1")
+
+    Raises:
+        TypeError: If input is not a string
+        ValueError: If address format is invalid
+
+    Examples:
+        >>> addr = IPv4Address("192.168.1.1")
+        >>> str(addr)
+        '192.168.1.1'
+        >>> int(addr)
+        3232235777
+    """
+
     PREFIXLEN_MIN = c.IPV4.PREFIXLEN_MIN
     PREFIXLEN_MAX = c.IPV4.PREFIXLEN_MAX
 
@@ -77,6 +98,27 @@ class IPv4Address:
 
 
 class IPv4Network:
+    """
+    Represents an IPv4 network.
+
+    The IPv4Network class represents a network address with a prefix length.
+    It provides methods for subnet calculations and address containment checks.
+
+    Args:
+        network (str): Network in CIDR notation (e.g. "192.168.1.0/24")
+
+    Raises:
+        TypeError: If input is not a string
+        ValueError: If network format is invalid or has host bits set
+
+    Examples:
+        >>> net = IPv4Network("192.168.1.0/24")
+        >>> net.broadcast
+        IPv4Address('192.168.1.255')
+        >>> list(net.subnets(prefixlen=25))
+        [IPv4Network('192.168.1.0/25'), IPv4Network('192.168.1.128/25')]
+    """
+
     def __init__(self, network: str) -> None:
         valids.validate_cidr(network)
 
@@ -266,6 +308,27 @@ class IPv4Network:
 
 
 class IPv4Interface:
+    """
+    Represents an IPv4 interface.
+
+    The IPv4Interface class combines an IPv4 address with its associated network,
+    representing a network interface configuration.
+
+    Args:
+        address (str): Interface address in CIDR notation (e.g. "192.168.1.1/24")
+
+    Raises:
+        TypeError: If input is not a string
+        ValueError: If address or network format is invalid
+
+    Examples:
+        >>> iface = IPv4Interface("192.168.1.1/24")
+        >>> iface.address
+        IPv4Address('192.168.1.1')
+        >>> iface.network
+        IPv4Network('192.168.1.0/24')
+    """
+
     def __init__(self, address: str) -> None:
         valids.validate_cidr(address)
         addr, prefixlen = address.split(c.DELIMITERS.SLASH, maxsplit=1)
