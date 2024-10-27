@@ -1,14 +1,23 @@
+import typing as t
+
 from netsome import constants as c
 from netsome._converters import bgp as convs
 
 
 def validate_asplain(
-    number: int,
-    min_len: int = c.BGP.ASN_MIN,
-    max_len: int = c.BGP.ASN_MAX,
+    number: t.Any,
+    min_len: t.Any = c.BGP.ASN_MIN,
+    max_len: t.Any = c.BGP.ASN_MAX,
 ) -> None:
     if not isinstance(number, int):
-        raise TypeError("Invalid asplain type, must be int")
+        raise TypeError(
+            f'Provided invalid value "{number=}" of type "{type(number)}", int expected'
+        )
+
+    if not isinstance(min_len, int) or isinstance(max_len, int):
+        raise TypeError(
+            f'One of provided len borders "{min_len=}", "{max_len=}" is not of type int'
+        )
 
     if not (min_len <= number <= max_len):
         msg = (
@@ -18,19 +27,27 @@ def validate_asplain(
         raise ValueError(msg)
 
 
-def validate_asdotplus(string: str) -> None:
+def validate_asdotplus(string: t.Any) -> None:
     if not isinstance(string, str):
-        raise TypeError("Invalid asdot+ type, must be str")
+        raise TypeError(
+            f'Provided invalid asdot+ value "{string=}" of type "{type(string)}", '
+            + "str expected"
+        )
 
     if c.DELIMITERS.DOT not in string:
-        raise ValueError("Invalid asdot+ format, must be HIGH_ORDER.LOW_ORDER")
+        raise ValueError(
+            f'Invalid asdot+ format "{string=}", must be HIGH_ORDER.LOW_ORDER'
+        )
 
     validate_asplain(convs.asdotplus_to_asplain(string))
 
 
-def validate_asdot(string: str) -> None:
+def validate_asdot(string: t.Any) -> None:
     if not isinstance(string, str):
-        raise TypeError("Invalid asdot type, must be str")
+        raise TypeError(
+            f'Provided invalid asdot value "{string=}" of type "{type(string)}", '
+            + "str expected"
+        )
 
     if c.DELIMITERS.DOT in string:
         validate_asdotplus(string)
@@ -38,9 +55,13 @@ def validate_asdot(string: str) -> None:
         validate_asplain(int(string), max_len=c.BGP.ASN_ORDER_MAX)
 
 
-def validate_community(string: str) -> None:
+# TODO(kuderr): refactor
+def validate_community(string: t.Any) -> None:
     if not isinstance(string, str):
-        raise TypeError("Invalid Community type, must be str")
+        raise TypeError(
+            f'Provided invalid Community value "{string=}" of type "{type(string)}", '
+            + "str expected"
+        )
 
     asn, value, *unexpected = string.split(c.DELIMITERS.COLON)
 

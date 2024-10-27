@@ -35,7 +35,7 @@ class Interface:
     def __init__(self, string: str):
         self._type, self._value, self._sub = self.parse_string(string)
 
-    def parse_string(self, string):
+    def parse_string(self, string: str) -> tuple[c.IFACE_TYPES, str, str | None]:
         for tp, pattern in self.IFACE_PATTERNS.items():
             if match := re.match(pattern, string):
                 groups = match.groupdict()
@@ -74,7 +74,7 @@ class Interface:
     def __repr__(self):
         return f'{self.__class__.__name__}("{self.canonical_name}")'
 
-    def __eq__(self, other):
+    def __eq__(self, other: object):
         if not isinstance(other, self.__class__):
             return NotImplemented
 

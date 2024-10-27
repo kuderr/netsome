@@ -62,7 +62,7 @@ class ASN:
         return cls(int(string))
 
     @classmethod
-    def parse(cls, value: str | int) -> "ASN":
+    def parse(cls, value: t.Any) -> "ASN":
         from_fmts = (
             cls,
             cls.from_asdot,

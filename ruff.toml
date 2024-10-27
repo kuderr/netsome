@@ -12,7 +12,7 @@ exclude = [
     "_build",
     "site-packages",
     "htmlcov",
-    "dist"
+    "dist",
 ]
 
 line-length = 88
