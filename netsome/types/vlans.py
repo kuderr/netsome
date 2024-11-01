@@ -5,6 +5,35 @@ from netsome.validators import vlans as valids
 
 
 class VID:
+    """
+    Represents a VLAN ID.
+
+    The VID class handles VLAN IDs with proper range validation and provides
+    methods to check special VLAN properties.
+
+    Args:
+        vid (int): VLAN ID (0-4095)
+
+    Attributes:
+        MIN (int): Minimum valid VLAN ID (0)
+        MAX (int): Maximum valid VLAN ID (4095)
+        DEFAULT (int): Default VLAN ID (1)
+        RESERVED (set): Set of reserved VLAN IDs (0, 1, 4095)
+
+    Raises:
+        TypeError: If input is not an integer
+        ValueError: If VLAN ID is outside valid range
+
+    Examples:
+        >>> vid = VID(100)
+        >>> vid.is_reserved()
+        False
+        >>> vid.is_default()
+        False
+        >>> int(vid)
+        100
+    """
+
     MIN = c.VLAN.VID_MIN
     MAX = c.VLAN.VID_MAX
     DEFAULT = c.VLAN.VID_DEFAULT

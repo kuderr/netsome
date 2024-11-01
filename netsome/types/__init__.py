@@ -1,3 +1,17 @@
+"""
+Network types package providing classes for handling common networking objects.
+
+The package includes classes for:
+- IPv4 addresses and networks
+- MAC addresses (48-bit and 64-bit)
+- BGP AS numbers and communities
+- VLAN IDs
+- Network interface names
+
+All types provide proper validation, comparison operations, and string representations.
+Consistent interfaces enable seamless integration into network automation workflows.
+"""
+
 from netsome.types.bgp import ASN
 from netsome.types.bgp import Community
 from netsome.types.interfaces import Interface

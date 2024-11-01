@@ -10,6 +10,31 @@ from netsome.validators import bgp as valids
 
 
 class ASN:
+    """
+    Represents a BGP Autonomous System Number.
+
+    An ASN can be represented in different formats:
+    - asplain: decimal number (e.g. 65000)
+    - asdot: hybrid decimal/dot notation for 4-byte ASNs (e.g. 65000 or 64512.1)
+    - asdotplus: mandatory dot notation for all ASNs (e.g. 0.65000 or 1.10)
+
+    Args:
+        number (int): ASN value in asplain format (0 to 4294967295)
+
+    Raises:
+        TypeError: If input is not an integer
+        ValueError: If input is outside valid range
+
+    Examples:
+        >>> asn = ASN(65000)
+        >>> str(asn)
+        '65000'
+        >>> asn.to_asdot()
+        '65000'
+        >>> asn.to_asdotplus()
+        '0.65000'
+    """
+
     MIN = c.BGP.ASN_MIN
     MAX = c.BGP.ASN_MAX
     ORDER_MAX = c.BGP.ASN_ORDER_MAX
@@ -89,6 +114,27 @@ class ASN:
 
 
 class Community:
+    """
+    Represents a BGP community value.
+
+    BGP communities are represented as ASN:VALUE pairs where both ASN and VALUE
+    are 16-bit numbers.
+
+    Args:
+        number (int): Community value as 32-bit integer
+
+    Raises:
+        TypeError: If input is not an integer
+        ValueError: If input is outside valid range
+
+    Examples:
+        >>> comm = Community.from_str('65000:100')
+        >>> str(comm)
+        '65000:100'
+        >>> int(comm)
+        4259840100
+    """
+
     def __init__(self, number: int) -> None:
         valids.validate_asplain(number)
         self._number = number

@@ -7,7 +7,28 @@ from netsome.validators import mac as valids
 
 
 class MacAddress:
-    # MAC-48/EUI-48
+    """
+    Represents a MAC-48/EUI-48 address.
+
+    The MacAddress class handles MAC addresses in various formats and provides
+    methods to check address properties and format conversions.
+
+    Args:
+        addr (str): MAC address as 12 hex digits (e.g. "001122334455")
+
+    Raises:
+        TypeError: If input is not a string
+        ValueError: If MAC address format is invalid
+
+    Examples:
+        >>> mac = MacAddress("001122334455")
+        >>> mac.to_str(delimiter=":")
+        '00:11:22:33:44:55'
+        >>> mac.oui
+        '001122'
+        >>> mac.is_unicast()
+        True
+    """
 
     MIN = c.MAC.ADDRESS_MIN
     MAX = c.MAC.ADDRESS_MAX
@@ -125,8 +146,24 @@ class MacAddress:
         return isinstance(other, self.__class__) and (self._addr >= other._addr)
 
 
+# TBD
 class Mac64Address:
-    # EUI-64
+    """
+    Represents an EUI-64 address.
+
+    The Mac64Address class handles 64-bit extended unique identifiers used in
+    IPv6 address generation and other contexts.
+
+    Note:
+        This class is currently a placeholder and needs implementation.
+
+    Args:
+        addr (str): 64-bit MAC address as 16 hex digits
+
+    Raises:
+        TypeError: If input is not a string
+        ValueError: If address format is invalid
+    """
 
     MIN = c.MAC.ADDRESS_MIN
     MAX = c.MAC.ADDRESS64_MAX
