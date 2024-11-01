@@ -91,7 +91,7 @@ class MacAddress:
         return obj
 
     @classmethod
-    def parse(cls, addr: str | int) -> "MacAddress":
+    def parse(cls, addr: t.Any) -> "MacAddress":
         # TODO: can collect all this from cls attrs?
         from_fmts = (
             cls,
