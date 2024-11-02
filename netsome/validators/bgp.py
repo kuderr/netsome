@@ -1,20 +1,21 @@
-import typing as t
+# pyright: strict, reportUnnecessaryIsInstance = false, reportUnreachable = false
+
 
 from netsome import constants as c
 from netsome._converters import bgp as convs
 
 
 def validate_asplain(
-    number: t.Any,
-    min_len: t.Any = c.BGP.ASN_MIN,
-    max_len: t.Any = c.BGP.ASN_MAX,
+    number: int,
+    min_len: int = c.BGP.ASN_MIN,
+    max_len: int = c.BGP.ASN_MAX,
 ) -> None:
     if not isinstance(number, int):
         raise TypeError(
             f'Provided invalid value "{number=}" of type "{type(number)}", int expected'
         )
 
-    if not isinstance(min_len, int) or isinstance(max_len, int):
+    if not (isinstance(min_len, int) and isinstance(max_len, int)):
         raise TypeError(
             f'One of provided len borders "{min_len=}", "{max_len=}" is not of type int'
         )
@@ -27,7 +28,7 @@ def validate_asplain(
         raise ValueError(msg)
 
 
-def validate_asdotplus(string: t.Any) -> None:
+def validate_asdotplus(string: str) -> None:
     if not isinstance(string, str):
         raise TypeError(
             f'Provided invalid asdot+ value "{string=}" of type "{type(string)}", '
@@ -42,7 +43,7 @@ def validate_asdotplus(string: t.Any) -> None:
     validate_asplain(convs.asdotplus_to_asplain(string))
 
 
-def validate_asdot(string: t.Any) -> None:
+def validate_asdot(string: str) -> None:
     if not isinstance(string, str):
         raise TypeError(
             f'Provided invalid asdot value "{string=}" of type "{type(string)}", '
@@ -56,7 +57,7 @@ def validate_asdot(string: t.Any) -> None:
 
 
 # TODO(kuderr): refactor
-def validate_community(string: t.Any) -> None:
+def validate_community(string: str) -> None:
     if not isinstance(string, str):
         raise TypeError(
             f'Provided invalid Community value "{string=}" of type "{type(string)}", '

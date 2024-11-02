@@ -97,7 +97,7 @@ def validate_prefixlen_int(
             f'Provided invalid value "{number=}" of type "{type(number)}", int expected'
         )
 
-    if not isinstance(min_len, int) or isinstance(max_len, int):
+    if not (isinstance(min_len, int) and isinstance(max_len, int)):
         raise TypeError(
             f'One of provided len borders "{min_len=}", "{max_len=}" is not of type int'
         )
