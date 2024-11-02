@@ -57,7 +57,6 @@ DnsRecord:
 
 ## other
 
-- [ ] docs
 - [ ] base classes in types to reuse code and DRY
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
@@ -65,3 +64,4 @@ DnsRecord:
 - [ ] rename VID to VlanID
 - [ ] run easy (minimal checks) & hard (run all possible data through code ??? all asn/ipv4 for example) tests suits
 - [ ] make hash/str/repr/eq tests as in ipv4 network?
+- [ ] coverage-badge
