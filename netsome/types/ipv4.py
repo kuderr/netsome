@@ -1,3 +1,6 @@
+# pyright: strict, reportUninitializedInstanceVariable=false, reportUnreachable=false, reportUnnecessaryIsInstance=false
+
+import collections.abc as cabc
 import contextlib
 import functools
 import typing as t
@@ -126,6 +129,7 @@ class IPv4Network:
         prefixlen = int(prefixlen)
         valids.validate_network_int(convs.address_to_int(addr), prefixlen)
 
+        self._prefixlen = prefixlen
         self._populate(IPv4Address(addr), prefixlen)
 
     def _populate(self, netaddr: IPv4Address, prefixlen: int) -> None:
@@ -248,7 +252,7 @@ class IPv4Network:
     def subnets(
         self,
         prefixlen: int | None = None,
-    ) -> t.Generator["IPv4Network", None, None]:
+    ) -> cabc.Generator["IPv4Network", None, None]:
         new_prefixlen = prefixlen or self._prefixlen + 1
         valids.validate_prefixlen_int(new_prefixlen, min_len=self._prefixlen + 1)
 
@@ -273,7 +277,7 @@ class IPv4Network:
 
         return IPv4Network.from_int(addr, new_prefixlen)
 
-    def hosts(self) -> t.Generator["IPv4Address", None, None]:
+    def hosts(self) -> cabc.Generator["IPv4Address", None, None]:
         start = int(self._netaddr) + 1
         end = int(self.broadcast)
 

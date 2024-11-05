@@ -1,6 +1,7 @@
 import pytest
-from netsome.types.interfaces import Interface
+
 from netsome import constants as c
+from netsome.types.interfaces import Interface
 
 
 @pytest.fixture
@@ -162,4 +163,4 @@ def test_interface_hash_consistency(basic_interface):
 def test_interface_comparison_with_other_types(basic_interface):
     assert basic_interface != "GigabitEthernet0/1"
     assert basic_interface != 123
-    assert basic_interface != None
+    assert basic_interface is not None
