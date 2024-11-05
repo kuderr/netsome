@@ -27,14 +27,32 @@ pip install netsome
 ## Basic Usage
 
 ```python
-from netsome.types import IPv4Address, IPv4Network, MacAddress, ASN, VID
+from netsome.types import (
+    IPv4Address,
+    IPv4Network,
+    IPv4Interface,
+    MacAddress,
+    ASN,
+    VID,
+    Community,
+    Interface,
+)
 
 # Create and manipulate IPv4 addresses
-addr = IPv4Address("192.168.1.1")
-net = IPv4Network("192.168.1.0/24")
+ipv4_addr = IPv4Address("192.168.1.1")
+print(ipv4_addr.address)  # "192.168.1.1"
+print(ipv4_addr.cidr)  # "192.168.1.1/32"
+
+ipv4_net = IPv4Network("192.168.1.0/24")
+print(ipv4_net.prefixlen)  # 24
+print(ipv4_net.netaddress)  # "192.168.1.0"
+
+ipv4_interface = IPv4Interface("192.168.1.1/24")
+print(ipv4_interface.address)  # "192.168.1.1"
+print(ipv4_interface.network)  # "192.168.1.0/24"
 
 # Work with MAC addresses
-mac = MacAddress("00:11:22:33:44:55")
+mac = MacAddress("001122334455")
 print(mac.is_unicast())  # True
 print(mac.oui)  # "001122"
 
@@ -42,9 +60,21 @@ print(mac.oui)  # "001122"
 asn = ASN.from_asdot("64512.1")
 print(asn.to_asplain())  # "4244897793"
 
+# Work with BGP Communities
+community = Community.from_str("65000:100")
+print(str(community))  # "65000:100"
+print(int(community))  # 4259840100
+
 # Manage VLAN IDs
 vid = VID(100)
 print(vid.is_reserved())  # False
+
+# Parse and work with network interface names
+iface = Interface("eth0")
+print(iface.type)  # IFACE_TYPES.ETHERNET
+print(iface.value)  # "0"
+print(iface.canonical_name)  # "Ethernet0"
+print(iface.abbreviated_name)  # "Eth0"
 ```
 
 # Authors
