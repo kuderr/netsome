@@ -60,11 +60,6 @@ exclude = [".venv", "dist", "tests"]
 reportAny = false
 reportImplicitOverride = false
 reportMissingSuperCall = false
-reportMissingTypeStubs = false
-reportUnnecessaryIsInstance = false
-reportUnsafeMultipleInheritance = false
-reportUntypedFunctionDecorator = false
-reportUnusedCallResult = false
 typeCheckingMode = 'all'
 
 [tool.pytest.ini_options]

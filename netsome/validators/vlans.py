@@ -1,4 +1,4 @@
-# pyright: strict, reportUnnecessaryIsInstance = false, reportUnreachable = false
+# pyright: strict, reportUnnecessaryIsInstance=false, reportUnreachable=false
 
 from netsome import constants as c
 

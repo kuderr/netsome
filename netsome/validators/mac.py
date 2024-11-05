@@ -1,4 +1,4 @@
-# pyright: strict, reportUnnecessaryIsInstance = false, reportUnreachable = false
+# pyright: strict, reportUnnecessaryIsInstance=false, reportUnreachable=false
 
 import re
 
