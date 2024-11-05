@@ -1,3 +1,6 @@
+# pyright: strict, reportUninitializedInstanceVariable=false, reportUnreachable=false, reportUnnecessaryIsInstance=false
+
+import collections.abc as cabc
 import contextlib
 import functools
 import typing as t
@@ -126,6 +129,7 @@ class IPv4Network:
         prefixlen = int(prefixlen)
         valids.validate_network_int(convs.address_to_int(addr), prefixlen)
 
+        self._prefixlen = prefixlen
         self._populate(IPv4Address(addr), prefixlen)
 
     def _populate(self, netaddr: IPv4Address, prefixlen: int) -> None:
@@ -155,7 +159,7 @@ class IPv4Network:
             if obj.prefixlen != int(prefixlen):
                 raise ValueError(
                     f'Provided prefixlen "{prefixlen}" is invalid for network "{addr}",'
-                    f' should be "{obj.prefixlen}"'
+                    + f' should be "{obj.prefixlen}"'
                 )
 
         return obj
@@ -172,7 +176,7 @@ class IPv4Network:
         if len(octets) > c.IPV4.OCTETS_COUNT:
             raise ValueError(
                 f'Provided value "{string}" should have'
-                f' less than "{c.IPV4.OCTETS_COUNT}" octets'
+                + f' less than "{c.IPV4.OCTETS_COUNT}" octets'
             )
 
         for octet in octets:
@@ -248,7 +252,7 @@ class IPv4Network:
     def subnets(
         self,
         prefixlen: int | None = None,
-    ) -> t.Generator["IPv4Network", None, None]:
+    ) -> cabc.Generator["IPv4Network", None, None]:
         new_prefixlen = prefixlen or self._prefixlen + 1
         valids.validate_prefixlen_int(new_prefixlen, min_len=self._prefixlen + 1)
 
@@ -273,7 +277,7 @@ class IPv4Network:
 
         return IPv4Network.from_int(addr, new_prefixlen)
 
-    def hosts(self) -> t.Generator["IPv4Address", None, None]:
+    def hosts(self) -> cabc.Generator["IPv4Address", None, None]:
         start = int(self._netaddr) + 1
         end = int(self.broadcast)
 
@@ -341,11 +345,11 @@ class IPv4Interface:
         return obj
 
     def _populate(self, address: str, prefixlen: str) -> None:
-        prefixlen = int(prefixlen)
+        prefixlen_ = int(prefixlen)
         self._addr = IPv4Address(address)
-        netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen)
+        netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen_)
         netaddr = int(self._addr) & netmask
-        self._network = IPv4Network.from_int(netaddr, prefixlen)
+        self._network = IPv4Network.from_int(netaddr, prefixlen_)
 
     @classmethod
     def from_objects(

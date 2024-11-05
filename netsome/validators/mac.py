@@ -1,3 +1,5 @@
+# pyright: strict, reportUnnecessaryIsInstance=false, reportUnreachable=false
+
 import re
 
 from netsome import constants as c
@@ -8,7 +10,12 @@ def validate_hex_string(string: str, size: int) -> None:
     # TODO: make common
     if not isinstance(string, str):
         raise TypeError(
-            f'Provided invalid value "{string}" of type "{type(string)}", str expected'
+            f'Provided invalid value "{string=}" of type "{type(string)}", str expected'
+        )
+
+    if not isinstance(size, int):
+        raise TypeError(
+            f'Provided invalid value "{size=}" of type "{type(size)}", int expected'
         )
 
     if not re.fullmatch(r"^[0-9a-fA-F]{%s}$" % size, string):
@@ -19,7 +26,7 @@ def validate_hex_string(string: str, size: int) -> None:
 def validate_int(number: int) -> None:
     if not isinstance(number, int):
         raise TypeError(
-            f'Provided invalid value "{number}" of type "{type(number)}", int expected'
+            f'Provided invalid value "{number=}" of type "{type(number)}", int expected'
         )
 
     if not (c.MAC.ADDRESS_MIN <= number <= c.MAC.ADDRESS_MAX):

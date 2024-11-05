@@ -1,5 +1,6 @@
 import enum
 import re
+import typing as t
 
 
 class NUMERALSYSTEMS(enum.IntEnum):
@@ -25,7 +26,7 @@ class DELIMITERS(str, enum.Enum):
     COLON = ":"
     SLASH = "/"
 
-    def join_as_str(self, *parts):
+    def join_as_str(self, *parts: t.Any) -> str:
         return self._value_.join(map(str, parts))
 
 
@@ -75,7 +76,13 @@ class IFACE_VAL_PATTERN(enum.Enum):
 
 # TODO(kuderr): add juniper interfaces
 class IFACE_TYPES(str, enum.Enum):
-    def _generate_next_value_(name, start, count, last_values):
+    @staticmethod
+    def _generate_next_value_(
+        name: str,
+        start: int,
+        count: int,
+        last_values: list[t.Any],
+    ) -> t.Any:
         return name
 
     ETHERNET = enum.auto()
@@ -110,12 +117,12 @@ IFACE_PATTERNS = {
     ),
     IFACE_TYPES.GIGABIT_ETHERNET: re.compile(
         r"^(GigabitEthernet|GigEthernet|GigEth|GigE|Gig|GE|Ge|ge|Gi|gi)"
-        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
+        + rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
         re.IGNORECASE,
     ),
     IFACE_TYPES.FAST_ETHERNET: re.compile(
         r"^(FastEthernet|FastEth|FastE|Fast|Fas|FE|Fa|fa)"
-        rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
+        + rf"{IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
         re.IGNORECASE,
     ),
     IFACE_TYPES.LOOPBACK: re.compile(

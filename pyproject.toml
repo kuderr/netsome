@@ -8,6 +8,7 @@ DIRS = "netsome tests"
 [tool.poe.tasks.lint]
 default_item_type = "cmd"
 sequence = [
+  "poetry run basedpyright",
   "poetry run ruff check --no-fix $DIRS",
   "poetry run toml-sort --check pyproject.toml"
 ]
@@ -42,6 +43,7 @@ version = "0.3.23"
 python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
+basedpyright = "^1.19.1"
 poethepoet = "^0.25.0"
 pytest = "7"
 pytest-cov = "^5.0.0"
@@ -52,6 +54,13 @@ toml-sort = "^0.23.1"
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/kuderr/netsome/issues"
 "Homepage" = "https://github.com/kuderr/netsome"
+
+[tool.pyright]
+exclude = [".venv", "dist", "tests"]
+reportAny = false
+reportImplicitOverride = false
+reportMissingSuperCall = false
+typeCheckingMode = 'all'
 
 [tool.pytest.ini_options]
 addopts = "-ra --log-level=DEBUG --showlocals --verbose"
