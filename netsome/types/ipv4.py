@@ -85,19 +85,34 @@ class IPv4Address:
         return hash(self._addr)
 
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._addr == other._addr)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr == other._addr
 
     def __lt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._addr < other._addr)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr < other._addr
 
     def __le__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._addr <= other._addr)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr <= other._addr
 
     def __gt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._addr > other._addr)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr > other._addr
 
     def __ge__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._addr >= other._addr)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr >= other._addr
 
 
 class IPv4Network:
@@ -219,11 +234,10 @@ class IPv4Network:
         return hash(self.as_tuple())
 
     def __eq__(self, other: t.Any) -> bool:
-        return (
-            isinstance(other, self.__class__)
-            and (self._netaddr == other._netaddr)
-            and (self._prefixlen == other._prefixlen)
-        )
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._netaddr == other._netaddr and self._prefixlen == other._prefixlen
 
     @property
     def prefixlen(self) -> int:
@@ -384,11 +398,10 @@ class IPv4Interface:
         return hash((self._addr, self._network))
 
     def __eq__(self, other: t.Any) -> bool:
-        return (
-            isinstance(other, self.__class__)
-            and self._addr == other._addr
-            and self._network == other._network
-        )
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._addr == other._addr and self._network == other._network
 
     @property
     def address(self) -> "IPv4Address":

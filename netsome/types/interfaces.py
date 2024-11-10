@@ -1,5 +1,6 @@
 import functools
 import re
+import typing as t
 
 from netsome import constants as c
 
@@ -44,24 +45,24 @@ class Interface:
         raise ValueError(f'Unable to parse "{string}" of type "{type(string)}"')
 
     @property
-    def type(self):
+    def type(self) -> c.IFACE_TYPES:
         return self._type
 
     @property
-    def value(self):
+    def value(self) -> str:
         return self._value
 
     @property
-    def sub(self):
+    def sub(self) -> str | None:
         return self._sub
 
     @functools.cached_property
-    def canonical_name(self):
+    def canonical_name(self) -> str:
         full_name, _ = self.IFACE_NAMES[self._type]
         return f"{full_name}{self._value}"
 
     @functools.cached_property
-    def abbreviated_name(self):
+    def abbreviated_name(self) -> str:
         _, short_name = self.IFACE_NAMES[self._type]
         return f"{short_name}{self._value}"
 
@@ -71,10 +72,10 @@ class Interface:
     def __str__(self) -> str:
         return self.canonical_name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.canonical_name}")'
 
-    def __eq__(self, other: object):
+    def __eq__(self, other: t.Any) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 

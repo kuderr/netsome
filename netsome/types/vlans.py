@@ -49,19 +49,34 @@ class VID:
         return self._vid
 
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._vid == other._vid)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._vid == other._vid
 
     def __lt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._vid < other._vid)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._vid < other._vid
 
     def __le__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._vid <= other._vid)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._vid <= other._vid
 
     def __gt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._vid > other._vid)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._vid > other._vid
 
     def __ge__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._vid >= other._vid)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._vid >= other._vid
 
     def __hash__(self) -> int:
         return hash(self._vid)

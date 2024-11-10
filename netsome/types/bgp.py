@@ -7,8 +7,6 @@ from netsome.validators import bgp as valids
 
 
 # TODO(kuderr): can move some common stuff to Base class
-
-
 class ASN:
     """
     Represents a BGP Autonomous System Number.
@@ -92,19 +90,34 @@ class ASN:
         return self.to_asplain()
 
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number == other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number == other._number
 
     def __lt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number < other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number < other._number
 
     def __le__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number <= other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number <= other._number
 
     def __gt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number > other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number > other._number
 
     def __ge__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number >= other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number >= other._number
 
     def __hash__(self) -> int:
         return hash(self._number)
@@ -155,19 +168,34 @@ class Community:
         return convs.asplain_to_community(self._number)
 
     def __eq__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number == other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number == other._number
 
     def __lt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number < other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number < other._number
 
     def __le__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number <= other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number <= other._number
 
     def __gt__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number > other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number > other._number
 
     def __ge__(self, other: t.Any) -> bool:
-        return isinstance(other, self.__class__) and (self._number >= other._number)
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._number >= other._number
 
     def __hash__(self) -> int:
         return hash(self._number)
