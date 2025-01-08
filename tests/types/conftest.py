@@ -35,6 +35,16 @@ def ipv4_net():
 
 
 @pytest.fixture
+def ipv6_addr():
+    return types.IPv6Address("::1")
+
+
+@pytest.fixture
+def ipv6_net():
+    return types.IPv6Network("::1/128")
+
+
+@pytest.fixture
 def min_asn():
     return types.ASN(0)
 
