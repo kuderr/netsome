@@ -18,12 +18,14 @@ class BYTES(enum.IntEnum):
     FIVE = 2 ** (8 * 5)
     SIX = 2 ** (8 * 6)
     EIGHT = 2 ** (8 * 8)
+    SIXTEEN = 2 ** (8 * 16)
 
 
 class DELIMITERS(str, enum.Enum):
     DASH = "-"
     DOT = "."
     COLON = ":"
+    DOUBLE_COLON = "::"
     SLASH = "/"
 
     def join_as_str(self, *parts: t.Any) -> str:
@@ -38,6 +40,19 @@ class IPV4(enum.IntEnum):
     ADDRESS_MAX = BYTES.FOUR - 1
 
     OCTETS_COUNT = 4
+
+    OCTET_MIN = 0
+    OCTET_MAX = BYTES.ONE - 1
+
+
+class IPV6(enum.IntEnum):
+    PREFIXLEN_MIN = 0
+    PREFIXLEN_MAX = 128
+
+    ADDRESS_MIN = 0
+    ADDRESS_MAX = BYTES.SIXTEEN - 1
+
+    OCTETS_COUNT = 16
 
     OCTET_MIN = 0
     OCTET_MAX = BYTES.ONE - 1

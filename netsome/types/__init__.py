@@ -18,6 +18,9 @@ from netsome.types.interfaces import Interface
 from netsome.types.ipv4 import IPv4Address
 from netsome.types.ipv4 import IPv4Interface
 from netsome.types.ipv4 import IPv4Network
+from netsome.types.ipv6 import IPv6Address
+from netsome.types.ipv6 import IPv6Interface
+from netsome.types.ipv6 import IPv6Network
 from netsome.types.mac import MacAddress
 from netsome.types.vlans import VID
 
@@ -29,6 +32,9 @@ __all__ = [
     "IPv4Address",
     "IPv4Interface",
     "IPv4Network",
+    "IPv6Address",
+    "IPv6Network",
+    "IPv6Interface",
     "MacAddress",
     "VID",
 ]
