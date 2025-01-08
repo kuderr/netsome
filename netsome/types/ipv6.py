@@ -105,12 +105,12 @@ class IPv6Address:
         return cls(addr)
 
     @functools.cached_property
-    def address(self) -> str:
+    def uncompressed(self) -> str:
         return convs.int_to_address(self._addr)
 
     @functools.cached_property
-    def compressed(self) -> str:
-        return _compress_ipv6_address(self.address)
+    def address(self) -> str:
+        return _compress_ipv6_address(self.uncompressed)
 
     @functools.cached_property
     def cidr(self) -> str:
@@ -243,11 +243,11 @@ class IPv6Network:
 
     @functools.cached_property
     def address(self) -> str:
-        return c.DELIMITERS.SLASH.join_as_str(self._netaddr.address, self._prefixlen)
+        return _compress_ipv6_address(self.uncompressed)
 
     @functools.cached_property
-    def compressed(self) -> str:
-        return _compress_ipv6_address(self.address)
+    def uncompressed(self) -> str:
+        return c.DELIMITERS.SLASH.join_as_str(self._netaddr.address, self._prefixlen)
 
     @functools.cached_property
     def hostmask(self) -> IPv6Address:
@@ -385,10 +385,10 @@ class IPv6Interface:
 
     @functools.cached_property
     def ip(self) -> str:
+        return _compress_ipv6_address(self.uncompressed)
+
+    @functools.cached_property
+    def uncompressed(self) -> str:
         return c.DELIMITERS.SLASH.join_as_str(
             self._addr.address, self._network.prefixlen
         )
-
-    @functools.cached_property
-    def compressed(self) -> str:
-        return _compress_ipv6_address(self.ip)
