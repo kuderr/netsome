@@ -85,6 +85,14 @@ def test_interface_equality(basic_interface):
             "abbreviated": "Vlan100",
         },
         {
+            "input": "Vlan100.1337",
+            "type": c.IFACE_TYPES.VLAN,
+            "value": "100.1337",
+            "sub": "1337",
+            "canonical": "Vlan100.1337",
+            "abbreviated": "Vlan100.1337",
+        },
+        {
             "input": "Management0",
             "type": c.IFACE_TYPES.MANAGEMENT,
             "value": "0",

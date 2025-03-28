@@ -130,7 +130,7 @@ IFACE_PATTERNS = {
         re.IGNORECASE,
     ),
     IFACE_TYPES.VLAN: re.compile(
-        rf"^(vlan){IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        rf"^(vlan){IFACE_VAL_PATTERN.VAL_SUB_IFACE.value.pattern}$",
         re.IGNORECASE,
     ),
     IFACE_TYPES.MANAGEMENT: re.compile(
