@@ -17,6 +17,21 @@ IPV4.OCTET_MIN     # 0
 IPV4.OCTET_MAX     # 255
 ```
 
+### IPV6 Constants
+
+```python
+from netsome.constants import IPV6
+
+IPV6.PREFIXLEN_MIN   # 0
+IPV6.PREFIXLEN_MAX   # 128
+IPV6.ADDRESS_MIN     # 0
+IPV6.ADDRESS_MAX     # 2^128 - 1
+IPV6.GROUPS_COUNT    # 8 (number of 16-bit groups)
+IPV6.BITS_PER_GROUP  # 16
+IPV6.GROUP_MIN       # 0
+IPV6.GROUP_MAX       # 0xFFFF (65535)
+```
+
 ### VLAN Constants
 
 ```python
@@ -76,6 +91,20 @@ ipv4.validate_prefixlen_int(24)
 ipv4.validate_octet_str("192")
 ipv4.validate_network_int(3232235776, 24)
 ipv4.validate_cidr("192.168.1.0/24")
+```
+
+### IPv6 Validators
+
+```python
+from netsome.validators import ipv6
+
+ipv6.validate_address_str("2001:db8::1")
+ipv6.validate_address_int(42540766411282592856903984951653826561)
+ipv6.validate_prefixlen_int(64)
+ipv6.validate_group_str("db8")
+ipv6.validate_group_int(3512)
+ipv6.validate_network_int(42540766411282592856903984951653826560, 32)
+ipv6.validate_cidr("2001:db8::/32")
 ```
 
 ### MAC Validators
