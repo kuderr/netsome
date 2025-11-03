@@ -22,9 +22,14 @@ def _handle_ipv4_mapped(string: str) -> int:
         ipv4_part = string[7:]  # Remove '::ffff:'
         ipv4_octets = ipv4_part.split(".")
         if len(ipv4_octets) == 4:
-            ipv4_int = int.from_bytes(map(int, ipv4_octets), byteorder="big")
+            ipv4_int = int.from_bytes(
+                bytes(int(octet) for octet in ipv4_octets), byteorder="big"
+            )
             return (0xFFFF << 32) + ipv4_int
-    raise ValueError(f"Unsupported IPv4-mapped format: {string}")
+    raise ValueError(
+        f"Unsupported IPv4-mapped format: {string}. "
+        + "Only '::ffff:x.x.x.x' format is supported (e.g., '::ffff:192.0.2.1')"
+    )
 
 
 def _parse_address_groups(string: str) -> list[str]:
@@ -38,7 +43,10 @@ def _parse_address_groups(string: str) -> list[str]:
 def _handle_compression(string: str) -> list[str]:
     """Handle :: compression in IPv6 address."""
     if string.count("::") > 1:
-        raise ValueError(f"Multiple '::' found in address: {string}")
+        raise ValueError(
+            f"Invalid address '{string}': multiple '::' compressions found. "
+            + "Only one '::' is allowed per address"
+        )
 
     parts = string.split("::")
     left_groups = parts[0].split(":") if parts[0] else []
@@ -51,7 +59,10 @@ def _handle_compression(string: str) -> list[str]:
     # Calculate missing groups
     missing_groups = c.IPV6.GROUPS_COUNT - len(left_groups) - len(right_groups)
     if missing_groups < 0:
-        raise ValueError(f"Too many groups in compressed address: {string}")
+        raise ValueError(
+            f"Invalid address '{string}': too many groups. "
+            + f"Expected at most {c.IPV6.GROUPS_COUNT} groups"
+        )
 
     # Reconstruct full groups list
     return left_groups + ["0"] * missing_groups + right_groups
@@ -75,15 +86,23 @@ def _groups_to_int(groups: list[str]) -> int:
         if not group:
             group = "0"
         if len(group) > 4:
-            raise ValueError(f"Group too long: {group}")
+            raise ValueError(
+                f"Invalid IPv6 group '{group}': groups must be 1-4 hexadecimal digits"
+            )
 
         try:
             group_int = int(group, 16)
         except ValueError:
-            raise ValueError(f"Invalid hexadecimal group: {group}")
+            raise ValueError(
+                f"Invalid IPv6 group '{group}': "
+                + "must contain only hexadecimal digits (0-9, a-f)"
+            )
 
         if not (c.IPV6.GROUP_MIN <= group_int <= c.IPV6.GROUP_MAX):
-            raise ValueError(f"Group value out of range: {group_int}")
+            raise ValueError(
+                f"Invalid IPv6 group value {group_int}: "
+                + f"must be between {c.IPV6.GROUP_MIN} and {c.IPV6.GROUP_MAX}"
+            )
 
         result |= group_int << ((c.IPV6.GROUPS_COUNT - 1 - i) * c.IPV6.BITS_PER_GROUP)
 

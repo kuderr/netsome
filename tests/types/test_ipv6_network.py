@@ -262,6 +262,89 @@ def test_equality():
     assert net1 != "not a network"  # Different type
 
 
+def test_comparison():
+    """Test comparison operators for IPv6Network."""
+    # Different networks with same prefix length
+    net1 = types.IPv6Network("2001:db8::/32")
+    net2 = types.IPv6Network("2001:db9::/32")
+    net3 = types.IPv6Network("2001:db8::/32")  # Same as net1
+
+    # Test less than
+    assert net1 < net2
+    assert not (net2 < net1)
+    assert not (net1 < net3)
+
+    # Test less than or equal
+    assert net1 <= net2
+    assert net1 <= net3
+    assert not (net2 <= net1)
+
+    # Test greater than
+    assert net2 > net1
+    assert not (net1 > net2)
+    assert not (net1 > net3)
+
+    # Test greater than or equal
+    assert net2 >= net1
+    assert net1 >= net3
+    assert not (net1 >= net2)
+
+
+def test_comparison_different_prefix_lengths():
+    """Test comparison with different prefix lengths."""
+    # Same network address, different prefix lengths
+    net1 = types.IPv6Network("2001:db8::/32")
+    net2 = types.IPv6Network("2001:db8::/64")
+
+    # Shorter prefix (larger network) should be "less than" longer prefix
+    # This is based on (netaddress_int, prefixlen) tuple comparison
+    assert net1 < net2
+    assert net1 <= net2
+    assert net2 > net1
+    assert net2 >= net1
+
+
+def test_comparison_with_different_types():
+    """Test comparison operators with non-network types."""
+    net = types.IPv6Network("2001:db8::/32")
+
+    # __eq__ returns NotImplemented, which Python converts to False for !=
+    assert net != "string"
+
+    # Other comparison operators should raise TypeError
+    with pytest.raises(TypeError):
+        net < "string"
+    with pytest.raises(TypeError):
+        net <= "string"
+    with pytest.raises(TypeError):
+        net > "string"
+    with pytest.raises(TypeError):
+        net >= "string"
+
+
+def test_comparison_sorting():
+    """Test that networks can be sorted."""
+    networks = [
+        types.IPv6Network("2001:db8:3::/64"),
+        types.IPv6Network("2001:db8:1::/64"),
+        types.IPv6Network("2001:db8:2::/64"),
+        types.IPv6Network("2001:db8::/32"),
+        types.IPv6Network("2001:db8::/48"),
+    ]
+
+    sorted_networks = sorted(networks)
+
+    expected = [
+        types.IPv6Network("2001:db8::/32"),
+        types.IPv6Network("2001:db8::/48"),
+        types.IPv6Network("2001:db8:1::/64"),
+        types.IPv6Network("2001:db8:2::/64"),
+        types.IPv6Network("2001:db8:3::/64"),
+    ]
+
+    assert sorted_networks == expected
+
+
 def test_str_and_repr():
     net = types.IPv6Network("2001:db8::/32")
 

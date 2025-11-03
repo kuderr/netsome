@@ -5,6 +5,7 @@
 [![downloads](https://static.pepy.tech/badge/netsome/month)](https://www.pepy.tech/projects/netsome)
 [![versions](https://img.shields.io/pypi/pyversions/netsome.svg)](https://github.com/kuderr/netsome)
 [![license](https://img.shields.io/github/license/kuderr/netsome.svg)](https://github.com/kuderr/netsome/blob/master/LICENSE)
+![coverage](./coverage.svg)
 
 A Python library for working with common networking types and conversions, including IPv4/IPv6 addresses/networks, MAC addresses, BGP ASNs, VLANs and network interfaces.
 

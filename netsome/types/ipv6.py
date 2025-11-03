@@ -256,6 +256,30 @@ class IPv6Network:
 
         return self._netaddr == other._netaddr and self._prefixlen == other._prefixlen
 
+    def __lt__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() < other.as_tuple()
+
+    def __le__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() <= other.as_tuple()
+
+    def __gt__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() > other.as_tuple()
+
+    def __ge__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() >= other.as_tuple()
+
     @property
     def prefixlen(self) -> int:
         return self._prefixlen
@@ -283,7 +307,6 @@ class IPv6Network:
         new_prefixlen = prefixlen or self._prefixlen + 1
         valids.validate_prefixlen_int(new_prefixlen, min_len=self._prefixlen + 1)
 
-        # prefixlen_diff = new_prefixlen - self._prefixlen  # Not used
         subnet_size = 1 << (c.IPV6.PREFIXLEN_MAX - new_prefixlen)
 
         current_addr = int(self._netaddr)
@@ -313,13 +336,27 @@ class IPv6Network:
         return IPv6Network.from_int(supernet_addr, new_prefixlen)
 
     def hosts(self) -> cabc.Generator["IPv6Address", None, None]:
+        """
+        Generate all host addresses in the network.
+
+        Note: Unlike IPv4, IPv6 does not have broadcast addresses, so all addresses
+        in the subnet are valid host addresses. This can generate extremely large
+        numbers of addresses for networks with small prefix lengths.
+
+        WARNING: Be cautious when calling this on large networks (e.g., /64 or smaller).
+        A /64 network contains 2^64 (18+ quintillion) addresses. Consider using
+        subnets() to break large networks into smaller chunks instead.
+
+        Yields:
+            IPv6Address: Each host address in the network
+        """
         if self._prefixlen == c.IPV6.PREFIXLEN_MAX:
             # Single address - yield the address itself
             yield self._netaddr
             return
 
-        # For IPv6, we don't exclude first and last addresses like in IPv4
-        # All addresses in the subnet are valid host addresses
+        # Unlike IPv4, IPv6 has no broadcast address concept.
+        # All addresses in an IPv6 subnet are valid host addresses.
         network_size = 1 << (c.IPV6.PREFIXLEN_MAX - self._prefixlen)
         start_addr = int(self._netaddr)
 

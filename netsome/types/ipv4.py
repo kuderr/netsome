@@ -239,6 +239,30 @@ class IPv4Network:
 
         return self._netaddr == other._netaddr and self._prefixlen == other._prefixlen
 
+    def __lt__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() < other.as_tuple()
+
+    def __le__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() <= other.as_tuple()
+
+    def __gt__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() > other.as_tuple()
+
+    def __ge__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self.as_tuple() >= other.as_tuple()
+
     @property
     def prefixlen(self) -> int:
         return self._prefixlen
