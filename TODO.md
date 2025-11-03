@@ -9,29 +9,6 @@ All:
 - [ ] constants for local, global etc. networks
 - [ ] link constants to classes
 
-IPv4Interface:
-
-- [ ] `__lt__`
-
-IPv4Network:
-
-- [ ] `__lt__`
-- [ ] contains for IPv4Address, IPv4Network
-
-IPv6Address:
-
-- [ ] implement
-
-IPv6Interface:
-
-- [ ] implement
-
-IPv6Network:
-
-- [ ] implement
-
-IPAddress/IPNetwork/IPInterface? (ipv4 + ipv6)
-
 ### mac
 
 Mac64Address:
@@ -61,6 +38,3 @@ DnsRecord:
 - [ ] think about public interfaces
 - [ ] IpPools? netaddr.IPSet analog
 - [ ] rename VID to VlanID
-- [ ] run easy (minimal checks) & hard (run all possible data through code ??? all asn/ipv4 for example) tests suits
-- [ ] make hash/str/repr/eq tests as in ipv4 network?
-- [ ] coverage-badge

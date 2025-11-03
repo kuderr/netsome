@@ -43,6 +43,78 @@ net = IPv4Network("192.168.1.0/24")
 - `contains_address(addr: IPv4Address)` - Checks if network contains address
 - `contains_subnet(net: IPv4Network)` - Checks if network contains subnet
 
+### IPv6Address
+
+Represents an IPv6 address.
+
+```python
+addr = IPv6Address("2001:db8::1")
+```
+
+#### Properties
+
+- `address` - Returns compressed string representation
+- `compressed` - Returns compressed representation (same as address)
+- `expanded` - Returns full uncompressed representation
+- `cidr` - Returns CIDR notation (xxxx::/128)
+- `is_multicast` - True if multicast address (ff00::/8)
+- `is_link_local` - True if link-local address (fe80::/10)
+- `is_loopback` - True if loopback address (::1)
+- `is_unspecified` - True if unspecified address (::)
+- `is_private` - True if private/unique local address (fc00::/7)
+- `is_global` - True if global unicast address
+
+#### Methods
+
+- `from_int(number: int) -> IPv6Address` - Create from 128-bit integer
+- `from_cidr(string: str) -> IPv6Address` - Create from CIDR notation
+
+### IPv6Network
+
+Represents an IPv6 network.
+
+```python
+net = IPv6Network("2001:db8::/32")
+```
+
+#### Properties
+
+- `address` - Network address string in CIDR notation
+- `prefixlen` - Network prefix length (0-128)
+- `netaddress` - Network address as IPv6Address
+- `netmask` - Network mask as IPv6Address
+- `hostmask` - Host mask as IPv6Address
+
+#### Methods
+
+- `from_int(int_addr: int, prefixlen: int)` - Create from integer and prefix
+- `from_address(string: str)` - Create /128 network from address
+- `parse(string: str)` - Parse various string formats
+- `hosts()` - Generator yielding all addresses in network
+- `subnets(prefixlen: int)` - Generator yielding subnet networks
+- `supernet(prefixlen: int)` - Returns parent network
+- `contains_address(addr: IPv6Address)` - Checks if network contains address
+- `contains_subnet(net: IPv6Network)` - Checks if network contains subnet
+
+### IPv6Interface
+
+Represents an IPv6 interface configuration.
+
+```python
+iface = IPv6Interface("2001:db8::1/64")
+```
+
+#### Properties
+
+- `address` - Interface address as IPv6Address
+- `network` - Associated network as IPv6Network
+- `ip` - CIDR representation string
+
+#### Methods
+
+- `from_simple(address: str, prefixlen: str)` - Create from separate parts
+- `from_objects(address: IPv6Address, network: IPv6Network)` - Create from objects
+
 ### MacAddress
 
 Represents a MAC-48/EUI-48 address.

@@ -559,3 +559,86 @@ def test_contains_address_ok(ipv4net, subnet, expected):
 def test_contains_address_type_error(ipv4net, subnet):
     with pytest.raises(TypeError):
         ipv4net.contains_address(subnet)
+
+
+def test_comparison():
+    """Test comparison operators for IPv4Network."""
+    # Different networks with same prefix length
+    net1 = types.IPv4Network("10.0.0.0/24")
+    net2 = types.IPv4Network("10.0.1.0/24")
+    net3 = types.IPv4Network("10.0.0.0/24")  # Same as net1
+
+    # Test less than
+    assert net1 < net2
+    assert not (net2 < net1)
+    assert not (net1 < net3)
+
+    # Test less than or equal
+    assert net1 <= net2
+    assert net1 <= net3
+    assert not (net2 <= net1)
+
+    # Test greater than
+    assert net2 > net1
+    assert not (net1 > net2)
+    assert not (net1 > net3)
+
+    # Test greater than or equal
+    assert net2 >= net1
+    assert net1 >= net3
+    assert not (net1 >= net2)
+
+
+def test_comparison_different_prefix_lengths():
+    """Test comparison with different prefix lengths."""
+    # Same network address, different prefix lengths
+    net1 = types.IPv4Network("10.0.0.0/16")
+    net2 = types.IPv4Network("10.0.0.0/24")
+
+    # Shorter prefix (larger network) should be "less than" longer prefix
+    # This is based on (netaddress_int, prefixlen) tuple comparison
+    assert net1 < net2
+    assert net1 <= net2
+    assert net2 > net1
+    assert net2 >= net1
+
+
+def test_comparison_with_different_types():
+    """Test comparison operators with non-network types."""
+    net = types.IPv4Network("10.0.0.0/24")
+
+    # __eq__ returns NotImplemented, which Python converts to False for !=
+    assert net != "string"
+
+    # Other comparison operators should raise TypeError
+    with pytest.raises(TypeError):
+        net < "string"
+    with pytest.raises(TypeError):
+        net <= "string"
+    with pytest.raises(TypeError):
+        net > "string"
+    with pytest.raises(TypeError):
+        net >= "string"
+
+
+def test_comparison_sorting():
+    """Test that networks can be sorted."""
+    networks = [
+        types.IPv4Network("10.0.3.0/24"),
+        types.IPv4Network("10.0.1.0/24"),
+        types.IPv4Network("10.0.2.0/24"),
+        types.IPv4Network("10.0.0.0/16"),
+        types.IPv4Network("10.0.0.0/20"),
+    ]
+
+    sorted_networks = sorted(networks)
+
+    expected = [
+        types.IPv4Network("10.0.0.0/16"),
+        types.IPv4Network("10.0.0.0/20"),
+        types.IPv4Network("10.0.1.0/24"),
+        types.IPv4Network("10.0.2.0/24"),
+        types.IPv4Network("10.0.3.0/24"),
+    ]
+
+    assert sorted_networks == expected

@@ -43,6 +43,20 @@ class IPV4(enum.IntEnum):
     OCTET_MAX = BYTES.ONE - 1
 
 
+class IPV6(enum.IntEnum):
+    PREFIXLEN_MIN = 0
+    PREFIXLEN_MAX = 128
+
+    ADDRESS_MIN = 0
+    ADDRESS_MAX = 2**128 - 1
+
+    GROUPS_COUNT = 8
+    BITS_PER_GROUP = 16
+
+    GROUP_MIN = 0
+    GROUP_MAX = 0xFFFF
+
+
 class VLAN(enum.IntEnum):
     VID_MIN = 0
     VID_MAX = 2**12 - 1

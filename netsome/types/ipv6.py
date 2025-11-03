@@ -6,54 +6,54 @@ import functools
 import typing as t
 
 from netsome import constants as c
-from netsome._converters import ipv4 as convs
-from netsome.validators import ipv4 as valids
+from netsome._converters import ipv6 as convs
+from netsome.validators import ipv6 as valids
 
 
-class IPv4Address:
+class IPv6Address:
     """
-    Represents an IPv4 address.
+    Represents an IPv6 address.
 
-    Class provides a way to store and manipulate individual IPv4 addresses.
-    Addresses can be created from strings in dotted decimal notation or integer values.
+    Class provides a way to store and manipulate individual IPv6 addresses.
+    Addresses can be created from strings in standard IPv6 notation or integer values.
 
     Args:
-        address (str): IPv4 address in dotted decimal notation (e.g. "192.168.1.1")
+        address (str): IPv6 address in standard notation (e.g. "2001:db8::1")
 
     Raises:
         TypeError: If input is not a string
         ValueError: If address format is invalid
 
     Examples:
-        >>> addr = IPv4Address("192.168.1.1")
+        >>> addr = IPv6Address("2001:db8::1")
         >>> str(addr)
-        '192.168.1.1'
+        '2001:db8::1'
         >>> int(addr)
-        3232235777
+        42540766411282592856903984951653826561
     """
 
-    PREFIXLEN_MIN = c.IPV4.PREFIXLEN_MIN
-    PREFIXLEN_MAX = c.IPV4.PREFIXLEN_MAX
+    PREFIXLEN_MIN = c.IPV6.PREFIXLEN_MIN
+    PREFIXLEN_MAX = c.IPV6.PREFIXLEN_MAX
 
-    ADDRESS_MIN = c.IPV4.ADDRESS_MIN
-    ADDRESS_MAX = c.IPV4.ADDRESS_MAX
+    ADDRESS_MIN = c.IPV6.ADDRESS_MIN
+    ADDRESS_MAX = c.IPV6.ADDRESS_MAX
 
-    OCTET_MIN = c.IPV4.OCTET_MIN
-    OCTET_MAX = c.IPV4.OCTET_MAX
+    GROUP_MIN = c.IPV6.GROUP_MIN
+    GROUP_MAX = c.IPV6.GROUP_MAX
 
     def __init__(self, address: str) -> None:
         valids.validate_address_str(address)
         self._addr = convs.address_to_int(address)
 
     @classmethod
-    def from_int(cls, number: int) -> "IPv4Address":
+    def from_int(cls, number: int) -> "IPv6Address":
         valids.validate_address_int(number)
         obj = cls.__new__(cls)
         obj._addr = number
         return obj
 
     @classmethod
-    def from_cidr(cls, string: str) -> "IPv4Address":
+    def from_cidr(cls, string: str) -> "IPv6Address":
         valids.validate_cidr(string)
 
         addr, prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
@@ -66,11 +66,59 @@ class IPv4Address:
 
     @functools.cached_property
     def address(self) -> str:
+        """Compressed IPv6 address representation."""
         return convs.int_to_address(self._addr)
 
     @functools.cached_property
     def cidr(self) -> str:
+        """IPv6 address in CIDR notation with /128."""
         return c.DELIMITERS.SLASH.join_as_str(self.address, self.PREFIXLEN_MAX.value)
+
+    @functools.cached_property
+    def compressed(self) -> str:
+        """Compressed IPv6 address (same as address)."""
+        return self.address
+
+    @functools.cached_property
+    def expanded(self) -> str:
+        """Expanded IPv6 address without compression."""
+        return convs.expand_address(self.address)
+
+    @functools.cached_property
+    def is_multicast(self) -> bool:
+        """True if address is multicast (ff00::/8)."""
+        return (self._addr >> 120) == 0xFF
+
+    @functools.cached_property
+    def is_link_local(self) -> bool:
+        """True if address is link-local (fe80::/10)."""
+        return (self._addr >> 118) == 0x3FA
+
+    @functools.cached_property
+    def is_loopback(self) -> bool:
+        """True if address is loopback (::1)."""
+        return self._addr == 1
+
+    @functools.cached_property
+    def is_unspecified(self) -> bool:
+        """True if address is unspecified (::)."""
+        return self._addr == 0
+
+    @functools.cached_property
+    def is_private(self) -> bool:
+        """True if address is private/unique local (fc00::/7)."""
+        return (self._addr >> 121) == 0x7E
+
+    @functools.cached_property
+    def is_global(self) -> bool:
+        """True if address is global unicast."""
+        return not (
+            self.is_multicast
+            or self.is_link_local
+            or self.is_loopback
+            or self.is_unspecified
+            or self.is_private
+        )
 
     def __int__(self) -> int:
         return self._addr
@@ -115,26 +163,26 @@ class IPv4Address:
         return self._addr >= other._addr
 
 
-class IPv4Network:
+class IPv6Network:
     """
-    Represents an IPv4 network.
+    Represents an IPv6 network.
 
-    The IPv4Network class represents a network address with a prefix length.
+    The IPv6Network class represents a network address with a prefix length.
     It provides methods for subnet calculations and address containment checks.
 
     Args:
-        network (str): Network in CIDR notation (e.g. "192.168.1.0/24")
+        network (str): Network in CIDR notation (e.g. "2001:db8::/32")
 
     Raises:
         TypeError: If input is not a string
         ValueError: If network format is invalid or has host bits set
 
     Examples:
-        >>> net = IPv4Network("192.168.1.0/24")
-        >>> net.broadcast
-        IPv4Address('192.168.1.255')
-        >>> list(net.subnets(prefixlen=25))
-        [IPv4Network('192.168.1.0/25'), IPv4Network('192.168.1.128/25')]
+        >>> net = IPv6Network("2001:db8::/32")
+        >>> net.prefixlen
+        32
+        >>> list(net.subnets(prefixlen=33))
+        [IPv6Network('2001:db8::/33'), IPv6Network('2001:db8:8000::/33')]
     """
 
     def __init__(self, network: str) -> None:
@@ -145,74 +193,43 @@ class IPv4Network:
         valids.validate_network_int(convs.address_to_int(addr), prefixlen)
 
         self._prefixlen = prefixlen
-        self._populate(IPv4Address(addr), prefixlen)
+        self._populate(IPv6Address(addr), prefixlen)
 
-    def _populate(self, netaddr: IPv4Address, prefixlen: int) -> None:
+    def _populate(self, netaddr: IPv6Address, prefixlen: int) -> None:
         self._prefixlen = prefixlen
         self._netaddr = netaddr
-        m = c.IPV4.ADDRESS_MAX
-        self._netmask = IPv4Address.from_int(m ^ (m >> prefixlen))
+
+        # Calculate netmask
+        if prefixlen == 0:
+            netmask_int = 0
+        else:
+            netmask_int = (
+                c.IPV6.ADDRESS_MAX << (c.IPV6.PREFIXLEN_MAX - prefixlen)
+            ) & c.IPV6.ADDRESS_MAX
+
+        self._netmask = IPv6Address.from_int(netmask_int)
 
     @classmethod
-    def from_int(cls, int_addr: int, prefixlen: int) -> "IPv4Network":
+    def from_int(cls, int_addr: int, prefixlen: int) -> "IPv6Network":
         valids.validate_address_int(int_addr)
         valids.validate_prefixlen_int(prefixlen)
         valids.validate_network_int(int_addr, prefixlen)
 
         obj = cls.__new__(cls)
-        obj._populate(IPv4Address.from_int(int_addr), prefixlen)
+        obj._populate(IPv6Address.from_int(int_addr), prefixlen)
         return obj
 
     @classmethod
-    def from_cidr(cls, string: str) -> "IPv4Network":
-        addr, *prefixlen = string.split(c.DELIMITERS.SLASH, maxsplit=1)
-        obj = cls.from_octets(addr)
-
-        if prefixlen:
-            prefixlen = prefixlen[0]
-            valids.validate_prefixlen_str(prefixlen)
-            if obj.prefixlen != int(prefixlen):
-                raise ValueError(
-                    f'Provided prefixlen "{prefixlen}" is invalid for network "{addr}",'
-                    + f' should be "{obj.prefixlen}"'
-                )
-
-        return obj
-
-    @classmethod
-    def from_address(cls, string: str) -> "IPv4Network":
+    def from_address(cls, string: str) -> "IPv6Network":
         obj = cls.__new__(cls)
-        obj._populate(IPv4Address(string), c.IPV4.PREFIXLEN_MAX.value)
+        obj._populate(IPv6Address(string), c.IPV6.PREFIXLEN_MAX.value)
         return obj
 
     @classmethod
-    def from_octets(cls, string: str) -> "IPv4Network":
-        octets = string.split(c.DELIMITERS.DOT)
-        if len(octets) > c.IPV4.OCTETS_COUNT:
-            raise ValueError(
-                f'Provided value "{string}" should have'
-                + f' less than "{c.IPV4.OCTETS_COUNT}" octets'
-            )
-
-        for octet in octets:
-            valids.validate_octet_str(octet)
-
-        prefixlen = len(octets) * 8
-        octets += ["0"] * (c.IPV4.OCTETS_COUNT - len(octets))
-        addr = c.DELIMITERS.DOT.join(octets)
-
-        obj = cls.__new__(cls)
-        obj._populate(IPv4Address(addr), prefixlen)
-
-        return obj
-
-    @classmethod
-    def parse(cls, string: str) -> "IPv4Network":
+    def parse(cls, string: str) -> "IPv6Network":
         from_fmts = (
             cls,
             cls.from_address,
-            cls.from_cidr,
-            cls.from_octets,
         )
 
         for fmt in from_fmts:
@@ -268,11 +285,11 @@ class IPv4Network:
         return self._prefixlen
 
     @property
-    def netaddress(self) -> IPv4Address:
+    def netaddress(self) -> IPv6Address:
         return self._netaddr
 
     @property
-    def netmask(self) -> IPv4Address:
+    def netmask(self) -> IPv6Address:
         return self._netmask
 
     @functools.cached_property
@@ -280,95 +297,122 @@ class IPv4Network:
         return c.DELIMITERS.SLASH.join_as_str(self._netaddr.address, self._prefixlen)
 
     @functools.cached_property
-    def hostmask(self) -> IPv4Address:
-        return IPv4Address.from_int(int(self._netmask) ^ c.IPV4.ADDRESS_MAX)
-
-    @functools.cached_property
-    def broadcast(self) -> IPv4Address:
-        return IPv4Address.from_int(int(self._netaddr) | int(self.hostmask))
+    def hostmask(self) -> IPv6Address:
+        return IPv6Address.from_int(int(self._netmask) ^ c.IPV6.ADDRESS_MAX)
 
     def subnets(
         self,
         prefixlen: int | None = None,
-    ) -> cabc.Generator["IPv4Network", None, None]:
+    ) -> cabc.Generator["IPv6Network", None, None]:
         new_prefixlen = prefixlen or self._prefixlen + 1
         valids.validate_prefixlen_int(new_prefixlen, min_len=self._prefixlen + 1)
 
-        prefixlen_diff = new_prefixlen - self._prefixlen
+        subnet_size = 1 << (c.IPV6.PREFIXLEN_MAX - new_prefixlen)
 
-        start = int(self._netaddr)
-        end = int(self.broadcast) + 1
-        step = (int(self.hostmask) + 1) >> prefixlen_diff
+        current_addr = int(self._netaddr)
+        network_size = 1 << (c.IPV6.PREFIXLEN_MAX - self._prefixlen)
+        end_addr = current_addr + network_size
 
-        for addr in range(start, end, step):
-            yield IPv4Network.from_int(addr, new_prefixlen)
+        while current_addr < end_addr:
+            yield IPv6Network.from_int(current_addr, new_prefixlen)
+            current_addr += subnet_size
 
     def supernet(
         self,
         prefixlen: int | None = None,
-    ) -> "IPv4Network":
+    ) -> "IPv6Network":
         new_prefixlen = prefixlen or self._prefixlen - 1
         valids.validate_prefixlen_int(new_prefixlen, max_len=self._prefixlen - 1)
 
-        prefixlen_diff = self._prefixlen - new_prefixlen
-        addr = int(self._netaddr) & (int(self._netmask) << prefixlen_diff)
+        # Calculate supernet address by masking host bits
+        if new_prefixlen == 0:
+            supernet_addr = 0
+        else:
+            mask = (
+                c.IPV6.ADDRESS_MAX << (c.IPV6.PREFIXLEN_MAX - new_prefixlen)
+            ) & c.IPV6.ADDRESS_MAX
+            supernet_addr = int(self._netaddr) & mask
 
-        return IPv4Network.from_int(addr, new_prefixlen)
+        return IPv6Network.from_int(supernet_addr, new_prefixlen)
 
-    def hosts(self) -> cabc.Generator["IPv4Address", None, None]:
-        start = int(self._netaddr) + 1
-        end = int(self.broadcast)
+    def hosts(self) -> cabc.Generator["IPv6Address", None, None]:
+        """
+        Generate all host addresses in the network.
 
-        # TODO(kuderr): make it prettier?
-        # /31 and /32 prefixlens
-        if self._prefixlen + 2 > c.IPV4.PREFIXLEN_MAX:
-            start -= 1
-            end += 1
+        Note: Unlike IPv4, IPv6 does not have broadcast addresses, so all addresses
+        in the subnet are valid host addresses. This can generate extremely large
+        numbers of addresses for networks with small prefix lengths.
 
-        for addr in range(start, end):
-            yield IPv4Address.from_int(addr)
+        WARNING: Be cautious when calling this on large networks (e.g., /64 or smaller).
+        A /64 network contains 2^64 (18+ quintillion) addresses. Consider using
+        subnets() to break large networks into smaller chunks instead.
 
-    def contains_subnet(self, subnet: "IPv4Network") -> bool:
+        Yields:
+            IPv6Address: Each host address in the network
+        """
+        if self._prefixlen == c.IPV6.PREFIXLEN_MAX:
+            # Single address - yield the address itself
+            yield self._netaddr
+            return
+
+        # Unlike IPv4, IPv6 has no broadcast address concept.
+        # All addresses in an IPv6 subnet are valid host addresses.
+        network_size = 1 << (c.IPV6.PREFIXLEN_MAX - self._prefixlen)
+        start_addr = int(self._netaddr)
+
+        for i in range(network_size):
+            yield IPv6Address.from_int(start_addr + i)
+
+    def contains_subnet(self, subnet: "IPv6Network") -> bool:
         if not isinstance(subnet, self.__class__):
             raise TypeError(
                 f'Unable to process value "{subnet}" of type "{type(subnet)}"'
             )
 
-        return (
-            self != subnet
-            and self.netaddress <= subnet.netaddress
-            and self.broadcast >= subnet.broadcast
-        )
+        if self == subnet:
+            return False
 
-    def contains_address(self, address: IPv4Address) -> bool:
-        if not isinstance(address, IPv4Address):
+        # For subnet to be contained, it must have a longer prefix
+        if subnet.prefixlen <= self.prefixlen:
+            return False
+
+        # Check if subnet's network address is within our network
+        return self.contains_address(subnet.netaddress)
+
+    def contains_address(self, address: IPv6Address) -> bool:
+        if not isinstance(address, IPv6Address):
             raise TypeError(
                 f'Unable to process value "{address}" of type "{type(address)}"'
             )
 
-        return self.netaddress <= address <= self.broadcast
+        if self._prefixlen == 0:
+            return True  # Network covers all addresses
+
+        # Apply network mask to both addresses and compare
+        mask = int(self._netmask)
+        return (int(address) & mask) == (int(self._netaddr) & mask)
 
 
-class IPv4Interface:
+class IPv6Interface:
     """
-    Represents an IPv4 interface.
+    Represents an IPv6 interface.
 
-    The IPv4Interface class combines an IPv4 address with its associated network,
+    The IPv6Interface class combines an IPv6 address with its associated network,
     representing a network interface configuration.
 
     Args:
-        address (str): Interface address in CIDR notation (e.g. "192.168.1.1/24")
+        address (str): Interface address in CIDR notation (e.g. "2001:db8::1/64")
 
     Raises:
         TypeError: If input is not a string
         ValueError: If address or network format is invalid
 
     Examples:
-        >>> iface = IPv4Interface("192.168.1.1/24")
+        >>> iface = IPv6Interface("2001:db8::1/64")
         >>> iface.address
-        IPv4Address('192.168.1.1')
+        IPv6Address('2001:db8::1')
         >>> iface.network
-        IPv4Network('192.168.1.0/24')
+        IPv6Network('2001:db8::/64')
     """
 
     def __init__(self, address: str) -> None:
@@ -377,28 +421,36 @@ class IPv4Interface:
         self._populate(addr, prefixlen)
 
     @classmethod
-    def from_simple(cls, address: str, prefixlen: str) -> "IPv4Interface":
+    def from_simple(cls, address: str, prefixlen: str) -> "IPv6Interface":
         obj = cls.__new__(cls)
         obj._populate(address, prefixlen)
         return obj
 
     def _populate(self, address: str, prefixlen: str) -> None:
         prefixlen_ = int(prefixlen)
-        self._addr = IPv4Address(address)
-        netmask = c.IPV4.ADDRESS_MAX ^ (c.IPV4.ADDRESS_MAX >> prefixlen_)
-        netaddr = int(self._addr) & netmask
-        self._network = IPv4Network.from_int(netaddr, prefixlen_)
+        self._addr = IPv6Address(address)
+
+        # Calculate network address
+        if prefixlen_ == 0:
+            netaddr = 0
+        else:
+            mask = (
+                c.IPV6.ADDRESS_MAX << (c.IPV6.PREFIXLEN_MAX - prefixlen_)
+            ) & c.IPV6.ADDRESS_MAX
+            netaddr = int(self._addr) & mask
+
+        self._network = IPv6Network.from_int(netaddr, prefixlen_)
 
     @classmethod
     def from_objects(
         cls,
-        address: IPv4Address,
-        network: IPv4Network,
-    ) -> "IPv4Interface":
-        if not isinstance(address, IPv4Address):
+        address: IPv6Address,
+        network: IPv6Network,
+    ) -> "IPv6Interface":
+        if not isinstance(address, IPv6Address):
             raise TypeError(f'Unable to create "{cls.__name__}" from "{address=}"')
 
-        if not isinstance(network, IPv4Network):
+        if not isinstance(network, IPv6Network):
             raise TypeError(f'Unable to create "{cls.__name__}" from "{network=}"')
 
         if not network.contains_address(address):
@@ -409,7 +461,7 @@ class IPv4Interface:
         obj._network = network
         return obj
 
-    def as_tuple(self) -> tuple[IPv4Address, IPv4Network]:
+    def as_tuple(self) -> tuple[IPv6Address, IPv6Network]:
         return self.address, self.network
 
     def __str__(self) -> str:
@@ -428,11 +480,11 @@ class IPv4Interface:
         return self._addr == other._addr and self._network == other._network
 
     @property
-    def address(self) -> "IPv4Address":
+    def address(self) -> "IPv6Address":
         return self._addr
 
     @property
-    def network(self) -> "IPv4Network":
+    def network(self) -> "IPv6Network":
         return self._network
 
     @functools.cached_property
