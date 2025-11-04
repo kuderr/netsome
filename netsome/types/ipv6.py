@@ -363,6 +363,58 @@ class IPv6Network:
         for i in range(network_size):
             yield IPv6Address.from_int(start_addr + i)
 
+    def host_at(self, index: int) -> IPv6Address:
+        """
+        Get the address at a specific index within the network without
+        enumerating all addresses.
+
+        This method provides O(1) access to any address within the network
+        range, making it efficient for large IPv6 networks where materializing
+        the entire address list would be impossible. For example, a /64 network
+        contains 2^64 (18+ quintillion) addresses that cannot be enumerated
+        in memory.
+
+        Args:
+            index: Zero-based index into the network's address space.
+                   Negative indexes count from the end (e.g., -1 = last address).
+
+        Returns:
+            IPv6Address at the specified index
+
+        Raises:
+            IndexError: If index is out of range for this network
+
+        Examples:
+            >>> net = IPv6Network("2001:db8::/64")
+            >>> net.host_at(0)  # First address
+            IPv6Address('2001:db8::')
+            >>> net.host_at(1)
+            IPv6Address('2001:db8::1')
+            >>> net.host_at(100)
+            IPv6Address('2001:db8::64')
+            >>> net.host_at(-1)  # Last address
+            IPv6Address('2001:db8::ffff:ffff:ffff:ffff')
+            >>> net.host_at(-2)
+            IPv6Address('2001:db8::ffff:ffff:ffff:fffe')
+
+        Note:
+            Unlike IPv4, IPv6 has no broadcast address concept, so all addresses
+            in the network are valid host addresses. This method enables efficient
+            sparse address allocation and random selection without memory overhead.
+        """
+        network_size = 1 << (c.IPV6.PREFIXLEN_MAX - self._prefixlen)
+
+        # Handle negative indexes (Python convention)
+        if index < 0:
+            index = network_size + index
+
+        if index < 0 or index >= network_size:
+            raise IndexError(
+                f"Index {index} out of range for network with {network_size} addresses"
+            )
+
+        return IPv6Address.from_int(int(self._netaddr) + index)
+
     def contains_subnet(self, subnet: "IPv6Network") -> bool:
         if not isinstance(subnet, self.__class__):
             raise TypeError(
