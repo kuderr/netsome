@@ -328,6 +328,58 @@ class IPv4Network:
         for addr in range(start, end):
             yield IPv4Address.from_int(addr)
 
+    def host_at(self, index: int) -> IPv4Address:
+        """
+        Get the address at a specific index within the network without
+        enumerating all addresses.
+
+        This method provides O(1) access to addresses within the network range,
+        making it efficient even for small networks where materializing the
+        entire address list would be wasteful. Unlike hosts(), this method
+        indexes ALL addresses in the network, including the network address
+        and broadcast address.
+
+        Args:
+            index: Zero-based index into the network's address space.
+                   Negative indexes count from the end (e.g., -1 = broadcast address).
+
+        Returns:
+            IPv4Address at the specified index
+
+        Raises:
+            IndexError: If index is out of range for this network
+
+        Examples:
+            >>> net = IPv4Network("192.168.1.0/24")
+            >>> net.host_at(0)  # Network address
+            IPv4Address('192.168.1.0')
+            >>> net.host_at(1)  # First usable host
+            IPv4Address('192.168.1.1')
+            >>> net.host_at(100)
+            IPv4Address('192.168.1.100')
+            >>> net.host_at(-1)  # Broadcast address
+            IPv4Address('192.168.1.255')
+            >>> net.host_at(-2)  # Last usable host
+            IPv4Address('192.168.1.254')
+
+        Note:
+            For a /24 network, index 0 returns the network address (.0) and
+            index -1 returns the broadcast address (.255). For the first and last
+            usable hosts, use index 1 and -2 respectively.
+        """
+        network_size = 1 << (c.IPV4.PREFIXLEN_MAX - self._prefixlen)
+
+        # Handle negative indexes (Python convention)
+        if index < 0:
+            index = network_size + index
+
+        if index < 0 or index >= network_size:
+            raise IndexError(
+                f"Index {index} out of range for network with {network_size} addresses"
+            )
+
+        return IPv4Address.from_int(int(self._netaddr) + index)
+
     def contains_subnet(self, subnet: "IPv4Network") -> bool:
         if not isinstance(subnet, self.__class__):
             raise TypeError(

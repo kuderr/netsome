@@ -350,3 +350,204 @@ def test_str_and_repr():
 
     assert str(net) == "2001:db8::/32"
     assert repr(net) == 'IPv6Network("2001:db8::/32")'
+
+
+@pytest.mark.parametrize(
+    ("network", "index", "expected"),
+    (
+        # /128 single address
+        (types.IPv6Network("2001:db8::1/128"), 0, types.IPv6Address("2001:db8::1")),
+        # /126 small network (4 addresses)
+        (types.IPv6Network("2001:db8::/126"), 0, types.IPv6Address("2001:db8::")),
+        (types.IPv6Network("2001:db8::/126"), 1, types.IPv6Address("2001:db8::1")),
+        (types.IPv6Network("2001:db8::/126"), 2, types.IPv6Address("2001:db8::2")),
+        (types.IPv6Network("2001:db8::/126"), 3, types.IPv6Address("2001:db8::3")),
+        # /120 network (256 addresses)
+        (types.IPv6Network("2001:db8::/120"), 0, types.IPv6Address("2001:db8::")),
+        (types.IPv6Network("2001:db8::/120"), 1, types.IPv6Address("2001:db8::1")),
+        (
+            types.IPv6Network("2001:db8::/120"),
+            100,
+            types.IPv6Address("2001:db8::64"),
+        ),
+        (types.IPv6Network("2001:db8::/120"), 255, types.IPv6Address("2001:db8::ff")),
+        # /64 large network - test various indexes
+        (types.IPv6Network("2001:db8::/64"), 0, types.IPv6Address("2001:db8::")),
+        (types.IPv6Network("2001:db8::/64"), 1, types.IPv6Address("2001:db8::1")),
+        (types.IPv6Network("2001:db8::/64"), 100, types.IPv6Address("2001:db8::64")),
+        (
+            types.IPv6Network("2001:db8::/64"),
+            1000,
+            types.IPv6Address("2001:db8::3e8"),
+        ),
+        (
+            types.IPv6Network("2001:db8::/64"),
+            65536,
+            types.IPv6Address("2001:db8::1:0"),
+        ),
+        # /48 network
+        (types.IPv6Network("2001:db8::/48"), 0, types.IPv6Address("2001:db8::")),
+        (
+            types.IPv6Network("2001:db8::/48"),
+            65536,
+            types.IPv6Address("2001:db8::1:0"),
+        ),
+    ),
+)
+def test_host_at_positive_index(network, index, expected):
+    """Test host_at with positive indexes."""
+    assert network.host_at(index) == expected
+
+
+@pytest.mark.parametrize(
+    ("network", "index", "expected"),
+    (
+        # /128 single address
+        (types.IPv6Network("2001:db8::1/128"), -1, types.IPv6Address("2001:db8::1")),
+        # /126 small network (4 addresses)
+        (types.IPv6Network("2001:db8::/126"), -1, types.IPv6Address("2001:db8::3")),
+        (types.IPv6Network("2001:db8::/126"), -2, types.IPv6Address("2001:db8::2")),
+        (types.IPv6Network("2001:db8::/126"), -4, types.IPv6Address("2001:db8::")),
+        # /120 network (256 addresses)
+        (types.IPv6Network("2001:db8::/120"), -1, types.IPv6Address("2001:db8::ff")),
+        (types.IPv6Network("2001:db8::/120"), -2, types.IPv6Address("2001:db8::fe")),
+        (types.IPv6Network("2001:db8::/120"), -256, types.IPv6Address("2001:db8::")),
+        # /64 large network
+        (
+            types.IPv6Network("2001:db8::/64"),
+            -1,
+            types.IPv6Address("2001:db8::ffff:ffff:ffff:ffff"),
+        ),
+        (
+            types.IPv6Network("2001:db8::/64"),
+            -2,
+            types.IPv6Address("2001:db8::ffff:ffff:ffff:fffe"),
+        ),
+    ),
+)
+def test_host_at_negative_index(network, index, expected):
+    """Test host_at with negative indexes (Python convention)."""
+    assert network.host_at(index) == expected
+
+
+@pytest.mark.parametrize(
+    ("network", "index"),
+    (
+        # /128 single address
+        (types.IPv6Network("2001:db8::1/128"), 1),
+        (types.IPv6Network("2001:db8::1/128"), -2),
+        # /126 small network (4 addresses)
+        (types.IPv6Network("2001:db8::/126"), 4),
+        (types.IPv6Network("2001:db8::/126"), -5),
+        # /120 network (256 addresses)
+        (types.IPv6Network("2001:db8::/120"), 256),
+        (types.IPv6Network("2001:db8::/120"), -257),
+        # /64 large network
+        (types.IPv6Network("2001:db8::/64"), 2**64),
+        (types.IPv6Network("2001:db8::/64"), -(2**64 + 1)),
+    ),
+)
+def test_host_at_index_error(network, index):
+    """Test host_at raises IndexError for out of range indexes."""
+    with pytest.raises(IndexError) as exc_info:
+        network.host_at(index)
+    assert "out of range" in str(exc_info.value)
+
+
+def test_host_at_large_ipv6_network():
+    """Test host_at works efficiently with very large IPv6 networks."""
+    # /64 network has 2^64 addresses (impossible to enumerate)
+    net = types.IPv6Network("2001:db8::/64")
+
+    # Test that we can access addresses without enumerating the entire space
+    first = net.host_at(0)
+    assert str(first) == "2001:db8::"
+
+    # Test sparse access
+    sparse_addr = net.host_at(1000000)
+    assert net.contains_address(sparse_addr)
+
+    # Test last address
+    last = net.host_at(-1)
+    assert str(last) == "2001:db8::ffff:ffff:ffff:ffff"
+
+    # Test second to last
+    second_last = net.host_at(-2)
+    assert str(second_last) == "2001:db8::ffff:ffff:ffff:fffe"
+
+
+def test_host_at_boundary_conditions():
+    """Test host_at at network boundaries."""
+    net = types.IPv6Network("2001:db8::/120")
+
+    # First address (network address)
+    assert net.host_at(0) == net.netaddress
+
+    # Last address in the range
+    last = net.host_at(-1)
+    assert last == net.host_at(255)
+
+
+def test_host_at_consistency_with_hosts():
+    """Test that host_at can access addresses from hosts() generator."""
+    # For small networks, verify host_at matches hosts()
+    net = types.IPv6Network("2001:db8::/126")
+    hosts_list = list(net.hosts())
+
+    # hosts() returns all 4 addresses for /126
+    assert len(hosts_list) == 4
+
+    # Verify each host can be accessed via host_at()
+    for i, host in enumerate(hosts_list):
+        assert net.host_at(i) == host
+
+
+def test_host_at_sparse_allocation():
+    """Test sparse address allocation pattern."""
+    # Allocate every 1000th address in a /64 network
+    net = types.IPv6Network("2001:db8::/64")
+
+    addresses = [net.host_at(i * 1000) for i in range(10)]
+
+    # Verify all addresses are in the network
+    for addr in addresses:
+        assert net.contains_address(addr)
+
+    # Verify addresses are different
+    assert len(set(addresses)) == 10
+
+
+def test_host_at_arithmetic_operations():
+    """Test that host_at produces correct arithmetic results."""
+    net = types.IPv6Network("2001:db8::/120")
+
+    # Test that consecutive indexes produce consecutive addresses
+    addr_0 = net.host_at(0)
+    addr_1 = net.host_at(1)
+    addr_100 = net.host_at(100)
+
+    # Verify the integer values are correct
+    assert int(addr_1) == int(addr_0) + 1
+    assert int(addr_100) == int(addr_0) + 100
+
+
+def test_host_at_extremely_large_network():
+    """Test host_at with /48 network (2^80 addresses)."""
+    # /48 network is commonly used for large organizations
+    net = types.IPv6Network("2001:db8::/48")
+
+    # Test basic indexing works
+    assert str(net.host_at(0)) == "2001:db8::"
+    assert str(net.host_at(1)) == "2001:db8::1"
+
+    # Test we can access addresses far into the space
+    # 2^16 = 65536
+    # For /48 network, adding 65536 affects the host bits
+    addr = net.host_at(65536)
+    # 2001:db8:: + 0x10000 = 2001:db8::1:0
+    assert str(addr) == "2001:db8::1:0"
+
+    # Test negative indexing still works
+    last = net.host_at(-1)
+    # Last address of /48 is first + 2^80 - 1
+    assert net.contains_address(last)
