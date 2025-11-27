@@ -124,6 +124,38 @@ def test_interface_equality(basic_interface):
             "canonical": "ce1",
             "abbreviated": "ce1",
         },
+        {
+            "input": "xe49/1",
+            "type": c.IFACE_TYPES.XE,
+            "value": "49/1",
+            "sub": None,
+            "canonical": "xe49/1",
+            "abbreviated": "xe49/1",
+        },
+        {
+            "input": "xe1/0/0",
+            "type": c.IFACE_TYPES.XE,
+            "value": "1/0/0",
+            "sub": None,
+            "canonical": "xe1/0/0",
+            "abbreviated": "xe1/0/0",
+        },
+        {
+            "input": "ce1/0",
+            "type": c.IFACE_TYPES.CE,
+            "value": "1/0",
+            "sub": None,
+            "canonical": "ce1/0",
+            "abbreviated": "ce1/0",
+        },
+        {
+            "input": "ce2/1/3",
+            "type": c.IFACE_TYPES.CE,
+            "value": "2/1/3",
+            "sub": None,
+            "canonical": "ce2/1/3",
+            "abbreviated": "ce2/1/3",
+        },
     ),
 )
 def test_interface_variations_extended(test_case):

@@ -156,11 +156,11 @@ IFACE_PATTERNS = {
         re.IGNORECASE,
     ),
     IFACE_TYPES.XE: re.compile(
-        rf"^xe{IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        rf"^xe{IFACE_VAL_PATTERN.VAL_EXTENDED.value.pattern}$",
         re.IGNORECASE,
     ),
     IFACE_TYPES.CE: re.compile(
-        rf"^ce{IFACE_VAL_PATTERN.VAL.value.pattern}$",
+        rf"^ce{IFACE_VAL_PATTERN.VAL_EXTENDED.value.pattern}$",
         re.IGNORECASE,
     ),
 }
