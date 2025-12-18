@@ -400,6 +400,46 @@ class IPv4Network:
 
         return self.netaddress <= address <= self.broadcast
 
+    def overlaps(self, other: "IPv4Network") -> bool:
+        """
+        Check if this network overlaps with another network.
+
+        Two networks overlap if one contains the other, they are equal,
+        or they share any addresses.
+
+        Args:
+            other: Another IPv4Network to check for overlap
+
+        Returns:
+            True if the networks overlap, False otherwise
+
+        Raises:
+            TypeError: If other is not an IPv4Network
+
+        Examples:
+            >>> net1 = IPv4Network("192.168.0.0/16")
+            >>> net2 = IPv4Network("192.168.1.0/24")
+            >>> net1.overlaps(net2)
+            True
+            >>> net3 = IPv4Network("10.0.0.0/8")
+            >>> net1.overlaps(net3)
+            False
+        """
+        if not isinstance(other, self.__class__):
+            raise TypeError(
+                f'Unable to process value "{other}" of type "{type(other)}"'
+            )
+
+        # Networks overlap if one contains the other's network address
+        # or if they are equal
+        if self == other:
+            return True
+
+        # Check if either network contains the other's network address
+        return self.contains_address(other.netaddress) or other.contains_address(
+            self.netaddress
+        )
+
 
 class IPv4Interface:
     """

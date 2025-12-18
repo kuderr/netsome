@@ -444,6 +444,46 @@ class IPv6Network:
         mask = int(self._netmask)
         return (int(address) & mask) == (int(self._netaddr) & mask)
 
+    def overlaps(self, other: "IPv6Network") -> bool:
+        """
+        Check if this network overlaps with another network.
+
+        Two networks overlap if one contains the other, they are equal,
+        or they share any addresses.
+
+        Args:
+            other: Another IPv6Network to check for overlap
+
+        Returns:
+            True if the networks overlap, False otherwise
+
+        Raises:
+            TypeError: If other is not an IPv6Network
+
+        Examples:
+            >>> net1 = IPv6Network("2001:db8::/32")
+            >>> net2 = IPv6Network("2001:db8::/48")
+            >>> net1.overlaps(net2)
+            True
+            >>> net3 = IPv6Network("2001:db9::/32")
+            >>> net1.overlaps(net3)
+            False
+        """
+        if not isinstance(other, self.__class__):
+            raise TypeError(
+                f'Unable to process value "{other}" of type "{type(other)}"'
+            )
+
+        # Networks overlap if one contains the other's network address
+        # or if they are equal
+        if self == other:
+            return True
+
+        # Check if either network contains the other's network address
+        return self.contains_address(other.netaddress) or other.contains_address(
+            self.netaddress
+        )
+
 
 class IPv6Interface:
     """

@@ -551,3 +551,61 @@ def test_host_at_extremely_large_network():
     last = net.host_at(-1)
     # Last address of /48 is first + 2^80 - 1
     assert net.contains_address(last)
+
+
+@pytest.mark.parametrize(
+    ("net1", "net2", "expected"),
+    (
+        # Same networks (equal)
+        (types.IPv6Network("2001:db8::/32"), types.IPv6Network("2001:db8::/32"), True),
+        # Supernet contains subnet
+        (types.IPv6Network("2001:db8::/32"), types.IPv6Network("2001:db8::/48"), True),
+        # Subnet is contained by supernet
+        (types.IPv6Network("2001:db8::/48"), types.IPv6Network("2001:db8::/32"), True),
+        # Completely separate networks
+        (types.IPv6Network("2001:db8::/32"), types.IPv6Network("2001:db9::/32"), False),
+        # Adjacent but not overlapping
+        (
+            types.IPv6Network("2001:db8::/48"),
+            types.IPv6Network("2001:db8:1::/48"),
+            False,
+        ),
+        # Same address, different prefix lengths
+        (types.IPv6Network("2001:db8::/32"), types.IPv6Network("2001:db8::/64"), True),
+        # /0 contains everything
+        (types.IPv6Network("::/0"), types.IPv6Network("2001:db8::/32"), True),
+        # /128 networks - same address
+        (
+            types.IPv6Network("2001:db8::1/128"),
+            types.IPv6Network("2001:db8::1/128"),
+            True,
+        ),
+        # /128 networks - different addresses
+        (
+            types.IPv6Network("2001:db8::1/128"),
+            types.IPv6Network("2001:db8::2/128"),
+            False,
+        ),
+        # Partial overlap scenarios
+        (types.IPv6Network("2001:db8::/31"), types.IPv6Network("2001:db9::/32"), True),
+        (types.IPv6Network("2001:db8::/33"), types.IPv6Network("2001:db8::/32"), True),
+    ),
+)
+def test_overlaps_ok(net1, net2, expected):
+    """Test overlaps returns correct boolean for various network pairs."""
+    assert net1.overlaps(net2) == expected
+
+
+@pytest.mark.parametrize(
+    ("net", "other"),
+    (
+        (types.IPv6Network("2001:db8::/32"), "2001:db8::/32"),
+        (types.IPv6Network("2001:db8::/32"), 5),
+        (types.IPv6Network("2001:db8::/32"), types.IPv6Address("2001:db8::1")),
+        (types.IPv6Network("2001:db8::/32"), None),
+    ),
+)
+def test_overlaps_type_error(net, other):
+    """Test overlaps raises TypeError for non-IPv6Network argument."""
+    with pytest.raises(TypeError):
+        net.overlaps(other)
