@@ -759,3 +759,57 @@ def test_host_at_consistency_with_hosts():
     # First usable host from hosts() is at index 1 in host_at()
     assert net.host_at(1) == hosts_list[0]  # 10.0.0.1
     assert net.host_at(2) == hosts_list[1]  # 10.0.0.2
+
+
+@pytest.mark.parametrize(
+    ("net1", "net2", "expected"),
+    (
+        # Same networks (equal)
+        (types.IPv4Network("10.0.0.0/24"), types.IPv4Network("10.0.0.0/24"), True),
+        # Supernet contains subnet
+        (
+            types.IPv4Network("192.168.0.0/16"),
+            types.IPv4Network("192.168.1.0/24"),
+            True,
+        ),
+        # Subnet is contained by supernet
+        (
+            types.IPv4Network("192.168.1.0/24"),
+            types.IPv4Network("192.168.0.0/16"),
+            True,
+        ),
+        # Completely separate networks
+        (types.IPv4Network("10.0.0.0/8"), types.IPv4Network("192.168.0.0/16"), False),
+        # Adjacent but not overlapping
+        (types.IPv4Network("10.0.0.0/24"), types.IPv4Network("10.0.1.0/24"), False),
+        # Same address, different prefix lengths
+        (types.IPv4Network("10.0.0.0/8"), types.IPv4Network("10.0.0.0/24"), True),
+        # /0 contains everything
+        (types.IPv4Network("0.0.0.0/0"), types.IPv4Network("192.168.1.0/24"), True),
+        # /32 networks - same address
+        (types.IPv4Network("10.0.0.1/32"), types.IPv4Network("10.0.0.1/32"), True),
+        # /32 networks - different addresses
+        (types.IPv4Network("10.0.0.1/32"), types.IPv4Network("10.0.0.2/32"), False),
+        # Partial overlap scenarios
+        (types.IPv4Network("10.0.0.0/23"), types.IPv4Network("10.0.1.0/24"), True),
+        (types.IPv4Network("10.0.0.0/25"), types.IPv4Network("10.0.0.0/24"), True),
+    ),
+)
+def test_overlaps_ok(net1, net2, expected):
+    """Test overlaps returns correct boolean for various network pairs."""
+    assert net1.overlaps(net2) == expected
+
+
+@pytest.mark.parametrize(
+    ("net", "other"),
+    (
+        (types.IPv4Network("10.0.0.0/24"), "10.0.0.0/24"),
+        (types.IPv4Network("10.0.0.0/24"), 5),
+        (types.IPv4Network("10.0.0.0/24"), types.IPv4Address("10.0.0.1")),
+        (types.IPv4Network("10.0.0.0/24"), None),
+    ),
+)
+def test_overlaps_type_error(net, other):
+    """Test overlaps raises TypeError for non-IPv4Network argument."""
+    with pytest.raises(TypeError):
+        net.overlaps(other)
