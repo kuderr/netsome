@@ -156,6 +156,22 @@ def test_interface_equality(basic_interface):
             "canonical": "ce2/1/3",
             "abbreviated": "ce2/1/3",
         },
+        {
+            "input": "xe2/1.5",
+            "type": c.IFACE_TYPES.XE,
+            "value": "2/1.5",
+            "sub": "5",
+            "canonical": "xe2/1.5",
+            "abbreviated": "xe2/1.5",
+        },
+        {
+            "input": "ce1/2.100",
+            "type": c.IFACE_TYPES.CE,
+            "value": "1/2.100",
+            "sub": "100",
+            "canonical": "ce1/2.100",
+            "abbreviated": "ce1/2.100",
+        },
     ),
 )
 def test_interface_variations_extended(test_case):
